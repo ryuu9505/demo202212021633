@@ -29,4 +29,5 @@ public class RoleHierarchyService {
         }
         return concatenatedRoles.toString();
     }
+
 }

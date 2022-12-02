@@ -1,6 +1,6 @@
 package com.example.demo6new.domain;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;

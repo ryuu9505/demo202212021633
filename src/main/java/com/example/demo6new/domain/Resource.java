@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -29,7 +31,7 @@ public class Resource {
     @Column(name = "resource_type")
     private String type;
 
-    @OneToMany(mappedBy = "resource")
-    private List<ResourceRole> resourceRoles = new ArrayList<>();
+    @ManyToMany(mappedBy = "resources")
+    private Set<Role> roles = new HashSet<>();
 
 }

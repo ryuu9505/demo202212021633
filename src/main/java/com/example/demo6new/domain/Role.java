@@ -18,13 +18,13 @@ public class Role {
     private Long id;
 
     @Column(name = "role_name")
-    private String roleName;
+    private String name;
 
-    @OneToMany(mappedBy = "role")
-    private List<AccountRole> accountRoles = new ArrayList<>();
+    @ManyToMany(mappedBy = "roles")
+    private List<Account> accounts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "role")
-    private List<ResourceRole> resourceRoles = new ArrayList<>();
+    @ManyToMany(mappedBy = "roles")
+    private List<Resource> resources = new ArrayList<>();
 
 }
 

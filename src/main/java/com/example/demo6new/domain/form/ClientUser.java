@@ -1,9 +1,11 @@
 package com.example.demo6new.domain.form;
 
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.List;
 
+@Data
 public class ClientUser {
 
     private String username;

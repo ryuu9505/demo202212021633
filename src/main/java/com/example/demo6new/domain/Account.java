@@ -4,7 +4,9 @@ import javax.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -24,7 +26,7 @@ public class Account {
 
     private String password;
 
-    @OneToMany(mappedBy = "account")
-    private List<AccountRole> accountRoles = new ArrayList<>();
+    @ManyToMany(mappedBy = "accounts")
+    private Set<Role> roles = new HashSet<>();
 
 }

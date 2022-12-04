@@ -1,43 +1,66 @@
-<!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head.html :: head-title-links-no-basic(~{::title}, ~{::link})}">
+    <title th:text="#{login}">login</title>
+    <link rel="stylesheet" th:href="@{/css/sign-in.css}" />
 </head>
+
 <body>
-<div>
-    <form th:action="@{/login_proc}" method="post">
-        <div th:if="${error}">
-            <span class="alert alert-danger" th:text="${exception}"></span>
+<main class="form-signin text-center w-100 m-auto">
+    <div th:if="${error}">
+        <span class="alert alert-danger" th:text="${exception}"></span>
+    </div>
+    <form action="#" th:action="@{/login_proc}" method="post"><!--todo class="needs-validation"-->
+        <div class="mb-4">
+            <a href="/"><img src="/assets/brand/logo-light.png" alt="" width="160" height="160"></a>
         </div>
-        <div>
-            <label for="username">Username</label>
-            <input type="text" name="username" id="username">
+        <div class="form-floating">
+            <input type="text" class="form-control" name="username" id="floatingInputTop" placeholder="Username" required minlength="3" maxlength="20">
+            <label for="floatingInputTop">Username</label>
         </div>
-        <div>
-            <label for="password">Password</label>
-            <input type="password" name="password" id="password">
+        <div class="form-floating">
+            <input type="password" class="form-control" name="password" id="floatingInputBottom" placeholder="Password" required minlength="8" maxlength="50">
+            <label for="floatingInputBottom">Password</label>
         </div>
-        <div>
-            <label for="remember-me">Remember me</label>
-            <input type="checkbox" name="remember-me" id="remember-me">
+        <div class="checkbox mt-2 mb-2">
+            <label>
+                <input type="checkbox" class="form-check-input" id="remember-me" name="remember-me">
+                <span class="text-light"> Remember me</span>
+            </label>
         </div>
-        <div>
-            <button type="submit">Login</button>
+        <div class="form-floating">
+            <button class="w-100 btn btn-lg btn-light" type="submit" >Login</button>
+        </div>
+        <div class="d-flex justify-content-center mt-2">
+            <div>
+                <a th:href="@{/oauth2/authorization/google}">
+                    <img src="/assets/login_button/google_button.png" width="60" height="60">
+                </a>
+            </div>
+            <div>
+                <a th:href="@{/oauth2/authorization/naver}">
+                    <img src="/assets/login_button/naver_button.png" width="60" height="60">
+                </a>
+            </div>
+            <div>
+                <a th:href="@{/oauth2/authorization/kakao}">
+                    <img src="/assets/login_button/kakao_button.png" width="60" height="60">
+                </a>
+            </div>
         </div>
     </form>
-    <div>
-        <a th:href="@{/oauth2/authorization/google}" style="color:red">
-            <span>Sign in with Google</span>
-        </a>
-        <a th:href="@{/oauth2/authorization/naver}" style="color:green">
-            <span>Sign in with NAVER</span>
-        </a>
-        <a th:href="@{/oauth2/authorization/kakao}" style="color:gold">
-            <span>Sign in with kakao</span>
-        </a>
+
+    <div class="find_text mt-1">
+        <small>
+            Forgot your <a target="_blank" id="pw-inquiry" href="#" th:href="@{/email-login}" class="en_find_text">Password</a>
+            or <a target="_blank" id="id-inquiry" href="#" class="en_find_text">Email</a>? |
+            <a target="_blank" id="join" href="#" th:href="@{/sign-up}" class="en_find_text">Sign up</a>
+        </small>
     </div>
-</div>
+
+
+</main>
+<script th:replace="~{fragments/script.html :: form-validation}"></script>
 </body>
 </html>

@@ -1,0 +1,25 @@
+spring:
+  config:
+    activate:
+      on-profile: "ops"
+  jpa:
+    hibernate:
+      ddl-auto: none
+  datasource:
+    driver-class-name:
+    url:
+    username:
+    password:
+---
+spring:
+  config:
+    activate:
+      on-profile: "dev"
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/demo5new2
+    username: postgres
+    password: archer10

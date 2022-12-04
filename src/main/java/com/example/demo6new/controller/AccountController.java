@@ -35,7 +35,7 @@ public class AccountController {
     public String signUpSubmit(@Validated AccountCreateForm form, BindingResult bindingResult) {
 
         if(bindingResult.hasErrors()) {
-            return "signup";
+            return "sign-up";
         }
         accountService.createAccount(form);
         return "redirect:/";

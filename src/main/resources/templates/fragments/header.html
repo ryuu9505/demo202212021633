@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+
+
+<header th:fragment="header-common" class="navbar navbar-expand-lg navbar-dark bd-navbar sticky-top" style="background-color: #212529;">
+    <nav class="container-xxl flex-wrap flex-md-nowrap" aria-label="Main navigation">
+
+        <div class="d-lg-none" style="width: 1.5rem;"></div>
+
+        <a class="navbar-brand p-0 me-lg-2" href="/" aria-label="Mouken">
+            <img src="/assets/brand/logo-light.png" width="40" height="40">
+        </a>
+
+        <div class="d-flex">
+            <button class="navbar-toggler d-flex d-lg-none order-3 p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#bdNavbar" aria-controls="bdNavbar" aria-label="Toggle navigation">
+                <i class="fa fa-bars" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="offcanvas-lg offcanvas-end flex-grow-1" tabindex="-1" id="bdNavbar" aria-labelledby="bdNavbarOffcanvasLabel" data-bs-scroll="true" style="background-color: #212529;">
+            <div class="offcanvas-header px-4 pb-0">
+                <h5 class="offcanvas-title text-white" id="bdNavbarOffcanvasLabel">Bootstrap</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#bdNavbar"></button>
+            </div>
+
+            <div class="offcanvas-body p-4 pt-0 p-lg-0">
+                <hr class="d-lg-none">
+                <ul class="navbar-nav flex-row flex-wrap bd-navbar-nav mt-1">
+                    <li class="nav-item col-6 col-lg-auto">
+                        <a class="nav-link" href="#">Docs</a>
+                    </li>
+                    <li class="nav-item col-6 col-lg-auto">
+                        <a class="nav-link" href="#">Examples</a>
+                    </li>
+                </ul>
+
+                <hr class="d-lg-none text-white-50">
+
+                <ul class="navbar-nav flex-row flex-wrap ms-md-auto">
+                    <li class="nav-item col-6 col-lg-auto">
+                        <form class="navbar-nav navbar col-12 col-md-auto mb-3 mb-md-0 ms-auto me-4" role="search">
+                            <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+                        </form>
+                    </li>
+                    <li class="nav-item py-1 col-12 col-lg-auto">
+                        <div class="vr d-none d-lg-flex h-100 mx-lg-2 text-white"></div>
+                        <hr class="d-lg-none text-white-50">
+                    </li>
+
+
+                    <li sec:authorize="!isAuthenticated()" class="nav-item dropdown">
+                        <button type="button" class="btn btn-link nav-link mt-2 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-display="static">
+
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header">Account</h6></li>
+                            <li><a class="dropdown-item" href="#" th:href="@{/login}">Sign in</a></li>
+                            <li><a class="dropdown-item" href="#" th:href="@{/sign-up}">Sign up</a></li>
+                        </ul>
+                    </li>
+
+                    <li sec:authorize="isAuthenticated()" class="nav-item dropdown">
+                        <button type="button" class="btn btn-link nav-link py-2 px-0 px-lg-2 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-display="static">
+                            <svg th:if="${#strings.isEmpty(account?.profileImage)}"
+                                 data-jdenticon-value="user127"
+                                 th:data-jdenticon-value="${#authentication.name}"
+                                 width="32" height="32" class="rounded-circle">
+                            </svg>
+                            <img th:if="${!#strings.isEmpty(account?.profileImage)}"
+                                 th:src="${account.profileImage}"
+                                 width="32" height="32" class="rounded border"/>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header">Account</h6></li>
+                            <li><a class="dropdown-item" href="#" th:href="@{'/profile/' + ${#authentication.name}}">Profile</a></li>
+                            <li><a class="dropdown-item" href="#" th:href="@{'/settings/profile'}">Setting</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form class="form-inline my-lg-0" action="#" th:action="@{/logout}" method="post">
+                                    <button class="dropdown-item" type="submit">Sign out</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+
+    </nav>
+</header>
+
+
+</body>
+</html>

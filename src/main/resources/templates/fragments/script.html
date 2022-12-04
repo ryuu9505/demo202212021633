@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    <script th:fragment="form-validation" type="application/javascript" >
+        (function () {
+            'use strict';
+
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+
+                // Loop over them and prevent submission
+                Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+            }, false)
+        }())
+    </script>
+
+    <script type="application/javascript" th:inline="javascript" th:fragment="ajax-csrf-header">
+        $(function() {
+            var csrfToken = /*[[${_csrf.token}]]*/ null;
+            var csrfHeader = /*[[${_csrf.headerName}]]*/ null;
+            $(document).ajaxSend(function (e, xhr, options) {
+                xhr.setRequestHeader(csrfHeader, csrfToken);
+            });
+        });
+    </script>
+
+    <script th:fragment="tooltip" type="application/javascript">
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+
+    <div th:fragment="editor-script">
+        <script src="/node_modules/summernote/dist/summernote-bs4.js"></script>
+        <script type="application/javascript">
+            $(function () {
+                $('.editor').summernote({
+                    fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Noto Sans KR', 'Noto Sans KR'],
+                    placeholder: '...',
+                    tabsize: 2,
+                    height: 300
+                });
+            });
+        </script>
+    </div>
+
+    <div th:fragment="update-tags (baseUrl)">
+        <script src="/node_modules/@yaireo/tagify/dist/tagify.min.js"></script>
+        <script type="application/javascript" th:inline="javascript">
+            $(function() {
+                function tagRequest(url, tagTitle) {
+                    $.ajax({
+                        dataType: "json",
+                        autocomplete: {
+                            enabled: true,
+                            rightKey: true,
+                        },
+                        contentType: "application/json; charset=utf-8",
+                        method: "POST",
+                        url: "[(${baseUrl})]" + url,
+                        data: JSON.stringify({'tagTitle': tagTitle})
+                    }).done(function (data, status) {
+                        console.log("${data} and status is ${status}");
+                    });
+                }
+
+                // tag added callback
+                function onAddTag(e) {
+                    tagRequest("/add", e.detail.data.value);
+                    // console.log("onAddTag: ", e.detail);
+                    // console.log("original input value: ", inputElm.value)
+                    // tagify.off('add', onAddTag) // exmaple of removing a custom Tagify event
+                }
+
+                // tag remvoed callback
+                function onRemoveTag(e) {
+                    tagRequest("/remove", e.detail.data.value);
+                    console.log("onRemoveTag:", e.detail, "tagify instance value:", tagify.value)
+                }
+
+                // on character(s) added/removed (user is typing/deleting)
+                function onInput(e) {
+                    console.log("onInput: ", e.detail);
+                    tagify.whitelist = null; // reset current whitelist
+                    tagify.loading(true) // show the loader animation
+
+                    // get new whitelist from a delayed mocked request (Promise)
+                    mockAjax()
+                        .then(function (result) {
+                            tagify.settings.whitelist = result.concat(tagify.value) // add already-existing tags to the new whitelist array
+
+                            tagify
+                                .loading(false)
+                                // render the suggestions dropdown.
+                                .dropdown.show(e.detail.value);
+                        })
+                        .catch(err => tagify.dropdown.hide())
+                }
+
+                function onTagEdit(e) {
+                    console.log("onTagEdit: ", e.detail);
+                }
+
+                // invalid tag added callback
+                function onInvalidTag(e) {
+                    console.log("onInvalidTag: ", e.detail);
+                }
+
+                // invalid tag added callback
+                function onTagClick(e) {
+                    console.log(e.detail);
+                    console.log("onTagClick: ", e.detail);
+                }
+
+                function onTagifyFocusBlur(e) {
+                    console.log(e.type, "event fired")
+                }
+
+                function onDropdownSelect(e) {
+                    console.log("onDropdownSelect: ", e.detail)
+                }
+
+                var mockAjax = (function mockAjax() {
+                    var timeout;
+                    return function (duration) {
+                        clearTimeout(timeout); // abort last request
+                        return new Promise(function (resolve, reject) {
+                            timeout = setTimeout(resolve, duration || 700, whitelist)
+                        })
+                    }
+                })()
+
+                var inputElm = document.querySelector('input[name=tags-outside]')
+
+                // init Tagify script on the above inputs
+                var tagify = new Tagify(inputElm, {
+                    pattern: /^.{0,20}$/,
+                    whitelist: JSON.parse(document.querySelector("#whitelist").textContent),
+                    dropdown: {
+                        position: "input",
+                        enabled: 0 // always opens dropdown when input gets focus
+                    }
+                })
+
+                // Chainable event listeners
+                tagify.on('add', onAddTag)
+                    .on('remove', onRemoveTag)
+                    // .on('input', onInput)
+                    .on('edit', onTagEdit)
+                    .on('invalid', onInvalidTag)
+                    .on('click', onTagClick)
+                    .on('focus', onTagifyFocusBlur)
+                    .on('blur', onTagifyFocusBlur)
+                    .on('dropdown:hide dropdown:show', e => console.log(e.type))
+                    .on('dropdown:select', onDropdownSelect)
+
+                // "remove all tags" button event listener
+                document.querySelector('.tags--removeAllBtn')
+                    .addEventListener('click', tagify.removeAllTags.bind(tagify))
+
+                // add a class to Tagify's input element
+                tagify.DOM.input.classList.add('form-control');
+                // re-place Tagify's input element outside of the  element (tagify.DOM.scope), just before it
+                tagify.DOM.scope.parentNode.insertBefore(tagify.DOM.input, tagify.DOM.scope);
+            });
+        </script>
+    </div>
+
+    <div th:fragment="update-zones (baseUrl)">
+        <script src="/node_modules/@yaireo/tagify/dist/tagify.min.js"></script>
+        <script type="application/javascript" th:inline="javascript">
+            $(function() {
+                function tagRequest(url, zoneName) {
+                    $.ajax({
+                        dataType: "json",
+                        autocomplete: {
+                            enabled: true,
+                            rightKey: true,
+                        },
+                        contentType: "application/json; charset=utf-8",
+                        method: "POST",
+                        url: "[(${baseUrl})]" + url,
+                        data: JSON.stringify({'zoneName': zoneName})
+                    }).done(function (data, status) {
+                        console.log("${data} and status is ${status}");
+                    });
+                }
+
+                // tag added callback
+                function onAddTag(e) {
+                    tagRequest("/add", e.detail.data.value);
+                    // console.log("onAddTag: ", e.detail);
+                    // console.log("original input value: ", inputElm.value)
+                    // tagify.off('add', onAddTag) // exmaple of removing a custom Tagify event
+                }
+
+                // tag remvoed callback
+                function onRemoveTag(e) {
+                    tagRequest("/remove", e.detail.data.value);
+                    console.log("onRemoveTag:", e.detail, "tagify instance value:", tagify.value)
+                }
+
+                // on character(s) added/removed (user is typing/deleting)
+                function onInput(e) {
+                    console.log("onInput: ", e.detail);
+                    tagify.whitelist = null; // reset current whitelist
+                    tagify.loading(true) // show the loader animation
+
+                    // get new whitelist from a delayed mocked request (Promise)
+                    mockAjax()
+                        .then(function (result) {
+                            tagify.settings.whitelist = result.concat(tagify.value) // add already-existing tags to the new whitelist array
+
+                            tagify
+                                .loading(false)
+                                // render the suggestions dropdown.
+                                .dropdown.show(e.detail.value);
+                        })
+                        .catch(err => tagify.dropdown.hide())
+                }
+
+                function onTagEdit(e) {
+                    console.log("onTagEdit: ", e.detail);
+                }
+
+                // invalid tag added callback
+                function onInvalidTag(e) {
+                    console.log("onInvalidTag: ", e.detail);
+                }
+
+                // invalid tag added callback
+                function onTagClick(e) {
+                    console.log(e.detail);
+                    console.log("onTagClick: ", e.detail);
+                }
+
+                function onTagifyFocusBlur(e) {
+                    console.log(e.type, "event fired")
+                }
+
+                function onDropdownSelect(e) {
+                    console.log("onDropdownSelect: ", e.detail)
+                }
+
+                var mockAjax = (function mockAjax() {
+                    var timeout;
+                    return function (duration) {
+                        clearTimeout(timeout); // abort last request
+                        return new Promise(function (resolve, reject) {
+                            timeout = setTimeout(resolve, duration || 700, whitelist)
+                        })
+                    }
+                })()
+
+                var inputElm = document.querySelector('input[name=tags-zone-outside]')
+
+                // init Tagify script on the above inputs
+                var tagify = new Tagify(inputElm, {
+                    pattern: /^.{0,50}$/,
+                    whitelist: JSON.parse(document.querySelector("#whitelist-zone").textContent),
+                    dropdown: {
+                        position: "input",
+                        enabled: 0 // always opens dropdown when input gets focus
+                    }
+                })
+
+                // Chainable event listeners
+                tagify.on('add', onAddTag)
+                    .on('remove', onRemoveTag)
+                    // .on('input', onInput)
+                    .on('edit', onTagEdit)
+                    .on('invalid', onInvalidTag)
+                    .on('click', onTagClick)
+                    .on('focus', onTagifyFocusBlur)
+                    .on('blur', onTagifyFocusBlur)
+                    .on('dropdown:hide dropdown:show', e => console.log(e.type))
+                    .on('dropdown:select', onDropdownSelect)
+
+                // "remove all tags" button event listener
+                document.querySelector('.tags--removeAllBtn')
+                    .addEventListener('click', tagify.removeAllTags.bind(tagify))
+
+                // add a class to Tagify's input element
+                tagify.DOM.input.classList.add('form-control');
+                // re-place Tagify's input element outside of the  element (tagify.DOM.scope), just before it
+                tagify.DOM.scope.parentNode.insertBefore(tagify.DOM.input, tagify.DOM.scope);
+            });
+        </script>
+    </div>
+
+    <div th:fragment="date-time">
+        <script src="/node_modules/moment/min/moment-with-locales.min.js"></script>
+        <script type="application/javascript">
+            $(function () {
+                moment.locale('ko');
+                $(".date-time").text(function(index, dateTime) {
+                    return moment(dateTime, "YYYY-MM-DD`T`hh:mm").format('LLL');
+                });
+                $(".date").text(function(index, dateTime) {
+                    return moment(dateTime, "YYYY-MM-DD`T`hh:mm").format('LL');
+                });
+                $(".weekday").text(function(index, dateTime) {
+                    return moment(dateTime, "YYYY-MM-DD`T`hh:mm").format('dddd');
+                });
+                $(".time").text(function(index, dateTime) {
+                    return moment(dateTime, "YYYY-MM-DD`T`hh:mm").format('LT');
+                });
+                $(".calendar").text(function(index, dateTime) {
+                    return moment(dateTime, "YYYY-MM-DD`T`hh:mm").calendar();
+                });
+                $(".fromNow").text(function(index, dateTime) {
+                    return moment(dateTime, "YYYY-MM-DD`T`hh:mm").fromNow();
+                });
+                $(".date-weekday-time").text(function(index, dateTime) {
+                    return moment(dateTime, "YYYY-MM-DD`T`hh:mm").format('LLLL');
+                });
+            })
+        </script>
+    </div>
+</body>
+</html>

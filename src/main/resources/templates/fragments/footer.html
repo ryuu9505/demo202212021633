@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <footer th:fragment="footer-common" class="text-center mt-5">
+        <img src="/assets/brand/logo-light-lg.png" alt="" width="96">
+        <small>&copy; 2022</small>
+    </footer>
+
+    <footer th:fragment="footerParam (param1, param2)">
+        <p>Parameters</p>
+        <p th:text="${param1}"></p>
+        <p th:text="${param2}"></p>
+    </footer>
+
+    <footer th:fragment="footer-row">
+        <div class="row">
+            <img class="mb-2" src="/images/logo-lg.png" alt="" width="96">
+            <small class="d-block mb-3 text-muted">Mouken &copy; 2022</small>
+        </div>
+    </footer>
+</body>
+</html>

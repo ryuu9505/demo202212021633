@@ -1,10 +1,11 @@
-package com.example.demo5new.controller.admin;
+package com.example.demo6new.controller.admin;
 
-import com.example.demo5new.controller.form.AccountForm;
-import com.example.demo5new.domain.Role;
-import com.example.demo5new.domain.users.Account;
-import com.example.demo5new.service.AccountService;
-import com.example.demo5new.service.RoleService;
+import com.example.demo6new.domain.Account;
+import com.example.demo6new.domain.Role;
+import com.example.demo6new.domain.form.AccountForm;
+import com.example.demo6new.domain.form.AccountModifyForm;
+import com.example.demo6new.service.AccountService;
+import com.example.demo6new.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +23,7 @@ public class UserManagerController {
 	private final RoleService roleService;
 
 	@GetMapping("/admin/accounts")
-	public String getAccounts(Model model) throws Exception {
+	public String getAccounts(Model model) {
 
 		List<Account> accounts = accountService.getAccounts();
 		model.addAttribute("accounts", accounts);
@@ -30,29 +31,25 @@ public class UserManagerController {
 		return "admin/user/list";
 	}
 
-	@PostMapping("/admin/accounts")
-	public String modifyAccount(AccountForm accountForm) throws Exception {
+	@PostMapping("/admin/account/{id}")
+	public String modifyAccount(@PathVariable Long id, AccountModifyForm form) {
+		accountService.modifyAccount(id, form);
 
-		accountService.modifyAccount(accountForm);
-
-		return "redirect:/admin/accounts";
+		return "redirect:/admin/account/" + id;
 	}
 
 	@GetMapping("/admin/accounts/{id}")
-	public String getAccount(@PathVariable(value = "id") Long id, Model model) {
-
-		AccountForm accountForm = accountService.getAccount(id);
-		List<Role> roleList = roleService.getRoles();
-
-		model.addAttribute("account", accountForm);
-		model.addAttribute("roleList", roleList);
+	public String getAccount(@PathVariable Long id, Model model) {
+		AccountForm form = accountService.getAccountForm(id);
+		List<Role> roleList = roleService.getRoleList();
+		model.addAttribute("account", form);
+		model.addAttribute("roleList", roleList); // todo refactor: roleList to roles
 
 		return "admin/user/detail";
 	}
 
-	@GetMapping(value = "/admin/accounts/delete/{id}")
-	public String deleteAccount(@PathVariable(value = "id") Long id, Model model) {
-
+	@GetMapping("/admin/accounts/delete/{id}") // todo feat: modify to use DELETE method
+	public String deleteAccount(@PathVariable(value = "id") Long id) {
 		accountService.deleteAccount(id);
 
 		return "redirect:/admin/users";

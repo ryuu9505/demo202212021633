@@ -1,6 +1,6 @@
-package com.example.demo5new.security.factory;
+package com.example.demo6new.factory;
 
-import com.example.demo5new.security.service.SecurityResourceService;
+import com.example.demo6new.service.SecurityResourceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.security.access.ConfigAttribute;
@@ -14,8 +14,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UrlResourcesMapFactoryBean implements FactoryBean<LinkedHashMap<RequestMatcher, List<ConfigAttribute>>> {
 
-    private final SecurityResourceService securityResourceService;
     private LinkedHashMap<RequestMatcher, List<ConfigAttribute>> resourceMap;
+    private final SecurityResourceService securityResourceService;
 
     @Override
     public LinkedHashMap<RequestMatcher, List<ConfigAttribute>> getObject() throws Exception {
@@ -28,7 +28,7 @@ public class UrlResourcesMapFactoryBean implements FactoryBean<LinkedHashMap<Req
     }
 
     public void init() {
-        resourceMap = securityResourceService.getResourceList();
+        resourceMap = securityResourceService.getResources();
     }
 
     @Override

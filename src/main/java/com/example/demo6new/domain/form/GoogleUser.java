@@ -1,50 +1,28 @@
 package com.example.demo6new.domain.form;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import com.example.demo6new.domain.Attributes;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
+public class GoogleUser extends AbstractProviderUser {
 
-@AllArgsConstructor
-public class GoogleUser {
-
-    private Map<String, Object> attributes;
-    private OAuth2User oAuth2User;
-    private ClientRegistration clientRegistration;
-
-    public String getId() {
-        return (String) attributes.get("sub");
+    public GoogleUser(Attributes attributes, OAuth2User oAuth2User, ClientRegistration clientRegistration) {
+        super(attributes.getFirstLayerAttributes(), oAuth2User, clientRegistration);
     }
 
+    @Override
     public String getUsername() {
-        return (String) attributes.get("name");
+        return (String) getAttributes().get("sub");
     }
 
+    @Override
+    public String getNickname() {
+        return (String) getAttributes().get("name");
+    }
+
+    @Override
     public String getPicture() {
-        return (String) attributes.get("picture");
+        return (String) getAttributes().get("picture");
     }
 
-    public String getPassword() {
-        return UUID.randomUUID().toString();
-    }
-
-    public String getEmail() {
-        return (String) attributes.get("email");
-    }
-
-    public String getProvider() {
-        return clientRegistration.getRegistrationId();
-    }
-
-    public List<? extends GrantedAuthority> getAuthorities() {
-        return oAuth2User.getAuthorities().stream().map(authority ->
-                new SimpleGrantedAuthority(authority.getAuthority())).collect(Collectors.toList());
-    }
 }

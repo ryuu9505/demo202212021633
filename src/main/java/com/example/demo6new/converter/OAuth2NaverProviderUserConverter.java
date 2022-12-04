@@ -1,9 +1,10 @@
-package com.example.demo5new.common.converters;
+package com.example.demo6new.converter;
 
-import com.example.demo5new.common.enums.OAuth2Config;
-import com.example.demo5new.common.util.OAuth2Utils;
-import com.example.demo5new.domain.users.ProviderUser;
-import com.example.demo5new.domain.users.social.NaverUser;
+
+import com.example.demo6new.domain.ProviderUser;
+import com.example.demo6new.domain.form.NaverUser;
+import com.example.demo6new.utility.OAuth2Config;
+import com.example.demo6new.utility.OAuth2Utils;
 
 public final class OAuth2NaverProviderUserConverter implements ProviderUserConverter<ProviderUserRequest,ProviderUser> {
     @Override
@@ -13,7 +14,7 @@ public final class OAuth2NaverProviderUserConverter implements ProviderUserConve
             return null;
         }
 
-        return new NaverUser(OAuth2Utils.getSubAttributes(
+        return new NaverUser(OAuth2Utils.getSecondLayerAttributes(
                 providerUserRequest.oAuth2User(), "response"),
                 providerUserRequest.oAuth2User(),
                 providerUserRequest.clientRegistration());

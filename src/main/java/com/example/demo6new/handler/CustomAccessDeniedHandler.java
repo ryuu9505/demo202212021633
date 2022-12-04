@@ -1,4 +1,4 @@
-package com.example.demo5new.security.handler;
+package com.example.demo6new.handler;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.example.demo5new.security.common.SecurityUrl.ACCESS_DENIED_URL;
+import static com.example.demo6new.utility.SecurityUrl.ACCESS_DENIED_URL;
 
 @Component
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {

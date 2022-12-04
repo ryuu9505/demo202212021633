@@ -1,6 +1,6 @@
-package com.example.demo5new.security.initializer;
+package com.example.demo6new.initializer;
 
-import com.example.demo5new.security.service.SecurityResourceService;
+import com.example.demo6new.service.SecurityResourceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

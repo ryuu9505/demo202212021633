@@ -1,8 +1,9 @@
-package com.example.demo5new.controller.admin;
+package com.example.demo6new.controller.admin;
 
-import com.example.demo5new.controller.form.RoleForm;
-import com.example.demo5new.domain.Role;
-import com.example.demo5new.service.RoleService;
+import com.example.demo6new.domain.Role;
+import com.example.demo6new.domain.form.RoleCreateForm;
+import com.example.demo6new.domain.form.RoleForm;
+import com.example.demo6new.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
@@ -19,52 +20,37 @@ public class RoleController {
 
 	private final RoleService roleService;
 
-	@GetMapping(value="/admin/roles")
-	public String getRoles(Model model) throws Exception {
-
-		List<Role> roles = roleService.getRoles();
-		model.addAttribute("roles", roles);
-
+	@GetMapping("/admin/roles")
+	public String getRoles(Model model) {
+		List<Role> roleList = roleService.getRoleList();
+		model.addAttribute("roles", roleList);
 		return "admin/role/list";
 	}
 
-	@GetMapping(value="/admin/roles/register")
-	public String viewRoles(Model model) throws Exception {
-
-		RoleForm role = new RoleForm();
-		model.addAttribute("role", role);
-
+	@GetMapping("/admin/roles/register")
+	public String createRoleForm(Model model) { // todo check
+		RoleForm form = new RoleForm();
+		model.addAttribute("role", form);
 		return "admin/role/detail";
 	}
 
-	@PostMapping(value="/admin/roles")
-	public String createRole(RoleForm roleForm) throws Exception {
-
-		ModelMapper modelMapper = new ModelMapper();
-		Role role = modelMapper.map(roleForm, Role.class);
-		roleService.createRole(role);
-
+	@PostMapping("/admin/roles")
+	public String createRole(RoleCreateForm form) {
+		roleService.createRole(form);
 		return "redirect:/admin/roles";
 	}
 
-	@GetMapping(value="/admin/roles/{id}")
-	public String getRole(@PathVariable String id, Model model) throws Exception {
-
-		Role role = roleService.getRole(Long.valueOf(id));
-
-		ModelMapper modelMapper = new ModelMapper();
-		RoleForm roleForm = modelMapper.map(role, RoleForm.class);
-		model.addAttribute("role", roleForm);
+	@GetMapping("/admin/roles/{id}")
+	public String getRole(@PathVariable Long id, Model model) {
+		RoleForm form = roleService.getRoleForm(id);
+		model.addAttribute("role", form);
 
 		return "admin/role/detail";
 	}
 
-	@GetMapping(value="/admin/roles/delete/{id}")
-	public String deleteResources(@PathVariable String id, Model model) throws Exception {
-
-		//Role role = roleService.getRole(Long.valueOf(id));
-		roleService.deleteRole(Long.valueOf(id));
-
+	@GetMapping("/admin/roles/delete/{id}") // todo refactor: to use DELETE method
+	public String deleteResources(@PathVariable Long id) {
+		roleService.deleteRole(id);
 		return "redirect:/admin/resources";
 	}
 }

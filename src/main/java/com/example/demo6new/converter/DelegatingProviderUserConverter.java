@@ -1,6 +1,6 @@
-package com.example.demo5new.common.converters;
+package com.example.demo6new.converter;
 
-import com.example.demo5new.domain.users.ProviderUser;
+import com.example.demo6new.domain.ProviderUser;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -21,8 +21,7 @@ public final class DelegatingProviderUserConverter implements ProviderUserConver
                 new UserDetailsProviderUserConverter(),
                 new OAuth2GoogleProviderUserConverter(),
                 new OAuth2NaverProviderUserConverter(),
-                new OAuth2KakaoProviderUserConverter(),
-                new OAuth2KakaoOidcProviderUserConverter());
+                new OAuth2KakaoProviderUserConverter());
 
         this.converters = Collections.unmodifiableList(new LinkedList<>(providerUserConverters));
     }
@@ -30,8 +29,7 @@ public final class DelegatingProviderUserConverter implements ProviderUserConver
     @Override
     @Nullable
     public ProviderUser convert(ProviderUserRequest providerUserRequest) {
-        Assert.notNull(providerUserRequest, "providerUserRequest cannot be null");
-
+        Assert.notNull(providerUserRequest, "providerUserRequest cannot be null"); // todo exception handling
         for (ProviderUserConverter<ProviderUserRequest, ProviderUser> converter : this.converters) {
             ProviderUser providerUser = converter.convert(providerUserRequest);
             if (providerUser != null) {

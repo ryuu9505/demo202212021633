@@ -1,4 +1,4 @@
-package com.example.demo6new.service;
+package com.example.demo6new.service.user;
 
 import com.example.demo6new.converter.ProviderUserConverter;
 import com.example.demo6new.converter.ProviderUserRequest;
@@ -6,7 +6,7 @@ import com.example.demo6new.domain.Account;
 import com.example.demo6new.domain.PrincipalUser;
 import com.example.demo6new.domain.ProviderUser;
 import com.example.demo6new.repository.AccountRepository;
-import lombok.RequiredArgsConstructor;
+import com.example.demo6new.service.AccountService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

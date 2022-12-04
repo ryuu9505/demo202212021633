@@ -1,4 +1,4 @@
-package com.example.demo5new.domain;
+package com.example.demo6new.domain;
 
 import lombok.Builder;
 import lombok.Data;
@@ -9,8 +9,8 @@ import java.util.Map;
 @Builder
 public class Attributes {
 
-    private Map<String, Object> mainAttributes;
-    private Map<String, Object> subAttributes;
-    private Map<String, Object> otherAttributes;
+    private Map<String, Object> firstLayerAttributes;
+    private Map<String, Object> secondLayerAttributes;
+    private Map<String, Object> thirdLayerAttributes;
 
 }

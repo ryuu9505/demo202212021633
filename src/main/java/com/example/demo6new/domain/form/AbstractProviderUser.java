@@ -1,2 +1,48 @@
-package com.example.demo6new.domain.form;public class AbstractProviderUser {
+package com.example.demo6new.domain.form;
+
+import com.example.demo6new.domain.ProviderUser;
+import lombok.Getter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+@Getter
+public abstract class AbstractProviderUser implements ProviderUser {
+
+    private Map<String, Object> attributes;
+    private OAuth2User oAuth2User;
+    private ClientRegistration clientRegistration;
+
+    public AbstractProviderUser(Map<String, Object> attributes, OAuth2User oAuth2User, ClientRegistration clientRegistration) {
+        this.attributes = attributes;
+        this.oAuth2User = oAuth2User;
+        this.clientRegistration = clientRegistration;
+    }
+
+    @Override
+    public String getEmail() {
+        return (String) attributes.get("email");
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
+    }
+
+    @Override
+    public String getProvider() {
+        return clientRegistration.getRegistrationId();
+    }
+
+    @Override
+    public List<? extends GrantedAuthority> getAuthorities() {
+        return oAuth2User.getAuthorities().stream().map(authority ->
+                new SimpleGrantedAuthority(authority.getAuthority())).collect(Collectors.toList());
+    }
 }

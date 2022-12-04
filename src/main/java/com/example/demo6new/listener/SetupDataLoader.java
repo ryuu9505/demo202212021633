@@ -1,11 +1,8 @@
-package com.example.demo5new.security.listener;
+package com.example.demo6new.listener;
 
-import com.example.demo5new.domain.AccessIp;
-import com.example.demo5new.domain.Resources;
-import com.example.demo5new.domain.Role;
-import com.example.demo5new.domain.RoleHierarchy;
-import com.example.demo5new.domain.users.Account;
-import com.example.demo5new.repository.*;
+import com.example.demo6new.domain.*;
+import com.example.demo6new.repository.*;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -13,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,125 +20,120 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RequiredArgsConstructor
 public class SetupDataLoader implements ApplicationListener<ContextRefreshedEvent> {
 
-    private boolean alreadySetup = false;
-    private final String IP_ADDRESS = "14.6.230.128";
-    private final String LOCALHOST = "0:0:0:0:0:0:0:1";
+    private boolean isSetUp = false;
     private final PasswordEncoder passwordEncoder;
     private final AccountRepository accountRepository;
     private final RoleRepository roleRepository;
-    private final ResourcesRepository resourcesRepository;
+    private final ResourceRepository resourceRepository;
     private final AccessIpRepository accessIpRepository;
     private final RoleHierarchyRepository roleHierarchyRepository;
-
     private static AtomicInteger count = new AtomicInteger(0);
 
 
     @Override
     public void onApplicationEvent(final ContextRefreshedEvent event) {
-        if (alreadySetup) {
-            return;
-        }
-        setupSecurityResources();
-        setupAccessIpData();
-        alreadySetup = true;
-    }
-
-    private void setupAccessIpData() {
-        if(!accessIpRepository.existsByIpAddress(IP_ADDRESS)) {
-            AccessIp accessIp = AccessIp.builder()
-                    .ipAddress(IP_ADDRESS)
-                    .build();
-            accessIpRepository.save(accessIp);
+        if (!isSetUp) {
+            setUpAccountAndRoleAndResource();
+            setUpIpBlacklist("14.6.230.128");
+            isSetUp = true;
         }
     }
 
-    private void setupSecurityResources() {
+    private void setUpAccountAndRoleAndResource() {
 
-        Set<Role> roles = new HashSet<>();
-        Role adminRole = createRoleIfNotFound("ROLE_ADMIN");
-        roles.add(adminRole);
-        createResourceIfNotFound("/admin/**", "", roles, "url");
-        createResourceIfNotFound("/config", "", roles, "url");
-        createUserIfNotFound("admin", "pass", "admin@gmail.com", roles);
+        // for admin
+        Set<Role> rolesAdmin = createRoleIfNotFound("ROLE_ADMIN");
+        createResourceIfNotFound("/admin/**", "", rolesAdmin, "url");
+        createUserIfNotFound("admin", "pass", "admin@email.com", rolesAdmin);
 
-        Set<Role> roles2 = new HashSet<>();
-        Role managerRole = createRoleIfNotFound("ROLE_MANAGER");
-        roles2.add(managerRole);
-        createResourceIfNotFound("/manager/**", "", roles2, "url");
-        createResourceIfNotFound("/messages", "", roles2, "url");
-        createUserIfNotFound("manager", "pass", "manager@gmail.com", roles2);
+        // for manager
+        Set<Role> rolesManager = createRoleIfNotFound("ROLE_MANAGER");
+        createResourceIfNotFound("/manager/**", "", rolesManager, "url");
+        createUserIfNotFound("manager", "pass", "manager@email.com", rolesManager);
 
-        Set<Role> roles3 = new HashSet<>();
-        Role userRole = createRoleIfNotFound("ROLE_USER");
-        roles3.add(userRole);
-        createResourceIfNotFound("/user/**", "", roles3, "url");
-        createResourceIfNotFound("/mypage", "", roles3, "url");
-        createUserIfNotFound("user", "pass", "user@gmail.com", roles3);
+        // for user
+        Set<Role> rolesUser = createRoleIfNotFound("ROLE_USER");
+        createResourceIfNotFound("/user/**", "", rolesUser, "url");
+        createUserIfNotFound("user", "pass", "user@email.com", rolesUser);
 
-        createRoleHierarchyIfNotFound(managerRole, adminRole);
-        createRoleHierarchyIfNotFound(userRole, managerRole);
+        // role hierarchy
+        createRoleHierarchyIfNotFound("ROLE_MANAGER", "ROLE_ADMIN");
+        createRoleHierarchyIfNotFound("ROLE_USER", "ROLE_MANAGER");
     }
 
-    public Role createRoleIfNotFound(String roleName) {
-
-        Role role = roleRepository.findByRoleName(roleName);
-
+    public Set<Role> createRoleIfNotFound(String roleName) {
+        
+        Role role = roleRepository.findByName(roleName);
         if (role == null) {
-            role = Role.builder()
-                    .roleName(roleName)
-                    .build();
+            role = roleRepository.save(
+                    Role.builder()
+                        .name(roleName)
+                        .build()
+            );
         }
-        return roleRepository.save(role);
+        
+        Set<Role> roles = new HashSet<>();
+        roles.add(role);
+        return roles;
     }
 
-    public Account createUserIfNotFound(String userName, String password, String email, Set<Role> roleSet) {
-
-        Account account = accountRepository.findByUsername(userName);
-
-        if (account == null) {
-            account = Account.builder()
-                    .username(userName)
+    public void createUserIfNotFound(String username, String password, String email, Set<Role> roleSet) {
+        if (!accountRepository.existsByUsername(username)) {
+            Account account = Account.builder()
+                    .username(username)
+                    .nickname(username)
                     .email(email)
                     .password(passwordEncoder.encode(password))
-                    .userRoles(roleSet)
+                    .roles(roleSet)
                     .build();
+            accountRepository.save(account);
         }
-        return accountRepository.save(account);
     }
 
-    public Resources createResourceIfNotFound(String resourceName, String httpMethod, Set<Role> roleSet, String resourceType) {
-        Resources resources = resourcesRepository.findByResourceNameAndHttpMethod(resourceName, httpMethod);
-
-        if (resources == null) {
-            resources = Resources.builder()
-                    .resourceName(resourceName)
-                    .roleSet(roleSet)
+    public void createResourceIfNotFound(String name, String httpMethod, Set<Role> roleSet, String type) {
+        if (!resourceRepository.existsByNameAndHttpMethod(name, httpMethod)) {
+            Resource resource = Resource.builder()
+                    .name(name)
+                    .roles(roleSet)
                     .httpMethod(httpMethod)
-                    .resourceType(resourceType)
+                    .type(type)
                     .orderNum(count.incrementAndGet())
                     .build();
+            resourceRepository.save(resource);
         }
-        return resourcesRepository.save(resources);
     }
 
-    public void createRoleHierarchyIfNotFound(Role childRole, Role parentRole) {
+    public void createRoleHierarchyIfNotFound(String childRoleName, String parentRoleName) {
 
-        RoleHierarchy roleHierarchy = roleHierarchyRepository.findByChildName(parentRole.getRoleName());
+        Role childRole = roleRepository.findByName(childRoleName);
+        Role parentRole = roleRepository.findByName(parentRoleName);
+
+        RoleHierarchy roleHierarchy = roleHierarchyRepository.findByRoleName(parentRole.getName());
         if (roleHierarchy == null) {
             roleHierarchy = RoleHierarchy.builder()
-                    .childName(parentRole.getRoleName())
+                    .roleName(parentRole.getName())
                     .build();
         }
         RoleHierarchy parentRoleHierarchy = roleHierarchyRepository.save(roleHierarchy);
 
-        roleHierarchy = roleHierarchyRepository.findByChildName(childRole.getRoleName());
+        roleHierarchy = roleHierarchyRepository.findByRoleName(childRole.getName());
         if (roleHierarchy == null) {
             roleHierarchy = RoleHierarchy.builder()
-                    .childName(childRole.getRoleName())
+                    .roleName(childRole.getName())
                     .build();
         }
-
         RoleHierarchy childRoleHierarchy = roleHierarchyRepository.save(roleHierarchy);
-        childRoleHierarchy.setParentName(parentRoleHierarchy);
+
+        childRoleHierarchy.setParent(parentRoleHierarchy);
     }
+
+    private void setUpIpBlacklist(String ipAddress) {
+        if(!accessIpRepository.existsByAddress(ipAddress)) {
+            AccessIp ip = AccessIp.builder()
+                    .address(ipAddress)
+                    .build();
+            accessIpRepository.save(ip);
+        }
+    }
+
 }

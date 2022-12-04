@@ -1,6 +1,6 @@
-package com.example.demo5new.security.metadatasource;
+package com.example.demo6new.metadatasource;
 
-import com.example.demo5new.security.service.SecurityResourceService;
+import com.example.demo6new.service.SecurityResourceService;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
@@ -9,17 +9,15 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
-public class UrlFilterInvocationSecurityMetadataSource
-        implements FilterInvocationSecurityMetadataSource {
+public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
 
-    private LinkedHashMap<RequestMatcher, List<ConfigAttribute>> requestMap = new LinkedHashMap<>();
+    private LinkedHashMap<RequestMatcher, List<ConfigAttribute>> requestMap;
     private SecurityResourceService securityResourceService;
 
     public UrlFilterInvocationSecurityMetadataSource(LinkedHashMap<RequestMatcher, List<ConfigAttribute>> requestMap, SecurityResourceService securityResourceService) {
         this.requestMap = requestMap;
         this.securityResourceService = securityResourceService;
     }
-
 
     @Override
     public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
@@ -56,9 +54,8 @@ public class UrlFilterInvocationSecurityMetadataSource
     }
 
     public void reload() {
-        LinkedHashMap<RequestMatcher, List<ConfigAttribute>> reloadMap = securityResourceService.getResourceList();
+        LinkedHashMap<RequestMatcher, List<ConfigAttribute>> reloadMap = securityResourceService.getResources();
         Iterator<Map.Entry<RequestMatcher, List<ConfigAttribute>>> iterator = reloadMap.entrySet().iterator();
-
         requestMap.clear();
 
         while(iterator.hasNext()) {
@@ -66,4 +63,5 @@ public class UrlFilterInvocationSecurityMetadataSource
             requestMap.put(entry.getKey(), entry.getValue());
         }
     }
+
 }

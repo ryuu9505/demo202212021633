@@ -1,4 +1,4 @@
-package com.example.demo5new.common.enums;
+package com.example.demo6new.utility;
 
 public class OAuth2Config {
     public enum SocialType{

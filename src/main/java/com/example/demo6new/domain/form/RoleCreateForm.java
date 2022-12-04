@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 @Data
 public class RoleCreateForm {
 
+    // todo unique
     @NotBlank
     private String name;
 

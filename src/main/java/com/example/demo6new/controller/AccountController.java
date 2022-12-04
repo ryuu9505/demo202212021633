@@ -1,8 +1,8 @@
-package com.example.demo5new.controller;
+package com.example.demo6new.controller;
 
-import com.example.demo5new.controller.form.AccountSaveForm;
-import com.example.demo5new.service.AccountService;
-import com.example.demo5new.validator.AccountSaveFormValidator;
+import com.example.demo6new.domain.form.AccountCreateForm;
+import com.example.demo6new.service.AccountService;
+import com.example.demo6new.validator.AccountCreateFormValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,27 +17,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequiredArgsConstructor
 public class AccountController {
 
-    private final AccountSaveFormValidator accountSaveFormValidator;
+    private final AccountCreateFormValidator accountCreateFormValidator;
     private final AccountService accountService;
 
-    @InitBinder("accountSaveForm")
+    @InitBinder("accountCreateForm")
     public void initBinder(WebDataBinder webDataBinder) {
-        webDataBinder.addValidators(accountSaveFormValidator);
+        webDataBinder.addValidators(accountCreateFormValidator);
     }
 
-    @GetMapping("/signup")
+    @GetMapping("/sign-up")
     public String signUpForm(Model model) {
-        model.addAttribute(new AccountSaveForm());
-        return "signup";
+        model.addAttribute(new AccountCreateForm());
+        return "sign-up";
     }
 
     @PostMapping("/signup")
-    public String signUpSubmit(@Validated AccountSaveForm accountSaveForm, BindingResult bindingResult) {
+    public String signUpSubmit(@Validated AccountCreateForm form, BindingResult bindingResult) {
 
         if(bindingResult.hasErrors()) {
             return "signup";
         }
-        accountService.saveAccount(accountSaveForm);
+        accountService.createAccount(form);
         return "redirect:/";
     }
 

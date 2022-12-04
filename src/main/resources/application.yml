@@ -1,8 +1,7 @@
 spring:
   profiles:
-#    default: ""
-    active: "test"
-#    include: db,security
+    active: "dev"
+    include: db,security
 ---
 server:
   port: 8080

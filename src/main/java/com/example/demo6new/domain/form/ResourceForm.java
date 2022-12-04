@@ -1,6 +1,6 @@
-package com.example.demo5new.controller.form;
+package com.example.demo6new.domain.form;
 
-import com.example.demo5new.domain.Role;
+import com.example.demo6new.domain.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,13 +12,14 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResourcesForm {
+public class ResourceForm {
 
     private String id;
-    private String resourceName;
+    private String name;
     private String httpMethod;
     private int orderNum;
-    private String resourceType;
-    private String roleName;
+    private String type;
     private Set<Role> roleSet;
+
+
 }

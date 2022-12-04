@@ -1,13 +1,13 @@
 package com.example.demo6new.controller.admin;
 
-import com.example.demo5new.controller.form.ResourcesCreateForm;
-import com.example.demo5new.controller.form.ResourcesForm;
-import com.example.demo5new.domain.Resources;
-import com.example.demo5new.domain.Role;
-import com.example.demo5new.repository.RoleRepository;
-import com.example.demo5new.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
-import com.example.demo5new.service.ResourcesService;
-import com.example.demo5new.service.RoleService;
+import com.example.demo6new.domain.Resource;
+import com.example.demo6new.domain.Role;
+import com.example.demo6new.domain.form.ResourceCreateForm;
+import com.example.demo6new.domain.form.ResourceForm;
+import com.example.demo6new.metadatasource.UrlFilterInvocationSecurityMetadataSource;
+import com.example.demo6new.repository.RoleRepository;
+import com.example.demo6new.service.ResourceService;
+import com.example.demo6new.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
@@ -22,72 +22,65 @@ import java.util.Set;
 
 @Controller
 @RequiredArgsConstructor
-public class ResourcesController {
+public class ResourceController { // todo refactor: 'resources' on urls to 'resource'
 
     private final ModelMapper modelMapper;
     private final UrlFilterInvocationSecurityMetadataSource filterInvocationSecurityMetadataSource;
-    private final RoleRepository roleRepository;
-    private final ResourcesService resourcesService;
+    private final ResourceService resourcesService;
     private final RoleService roleService;
 
-
     @GetMapping("/admin/resources")
-    public String resourcesList(Model model) throws Exception {
+    public String resourcesList(Model model) {
 
-        List<Resources> resources = resourcesService.getResources();
-        model.addAttribute("resources", resources);
+        List<Resource> resourceList = resourcesService.getResourceList();
+        model.addAttribute("resources", resourceList);
 
         return "admin/resource/list";
     }
 
     @GetMapping("/admin/resources/{id}")
-    public String getResources(@PathVariable String id, Model model) {
+    public String getResource(@PathVariable Long id, Model model) {
 
-        List<Role> roleList = roleService.getRoles();
+        /* todo modify with html file (move logics to service: getResourceForm())*/
+        List<Role> roleList = roleService.getRoleList();
         model.addAttribute("roleList", roleList);
 
-        Resources resources = resourcesService.getResources(Long.valueOf(id));
-        ResourcesForm resourcesForm = modelMapper.map(resources, ResourcesForm.class);
+        Resource resource = resourcesService.getResource(id);
+        ResourceForm resourcesForm = modelMapper.map(resource, ResourceForm.class);
         model.addAttribute("resources", resourcesForm);
 
         return "admin/resource/detail";
     }
 
-    @GetMapping(value="/admin/resources/register")
-    public String viewRoles(Model model) throws Exception {
+    @GetMapping("/admin/resources/register")
+    public String viewRoles(Model model) {
 
-        List<Role> roleList = roleService.getRoles();
+        /* todo modify with html file (move logics to service)*/
+        List<Role> roleList = roleService.getRoleList();
         model.addAttribute("roleList", roleList);
 
-        ResourcesForm resourcesForm = new ResourcesForm();
-        Set<Role> roleSet = new HashSet<>();
+        ResourceForm resourcesForm = new ResourceForm();
+        /*Set<Role> roleSet = new HashSet<>();
         roleSet.add(new Role());
-        resourcesForm.setRoleSet(roleSet);
+        resourcesForm.setRoleSet(roleSet);*/
         model.addAttribute("resources", resourcesForm);
 
         return "admin/resource/detail";
     }
     
     @PostMapping("/admin/resources")
-    public String createResources(ResourcesCreateForm resourcesCreateForm) {
+    public String createResource(ResourceCreateForm resourcesCreateForm) {
 
-        ModelMapper modelMapper = new ModelMapper();
-        Role role = roleRepository.findByRoleName(resourcesCreateForm.getRoleName());
-        Set<Role> roles = new HashSet<>();
-        roles.add(role);
-        Resources resources = modelMapper.map(resourcesCreateForm, Resources.class);
-        resources.setRoleSet(roles);
-
-        resourcesService.createResources(resources);
+        resourcesService.createResource(resourcesCreateForm);
         filterInvocationSecurityMetadataSource.reload();
 
         return "redirect:/admin/resources";
     }
 
     @GetMapping("/admin/resources/delete/{id}") // todo; to use DELETE method
-    public String removeResources(@PathVariable String id, Model model) {
+    public String removeResource(@PathVariable String id, Model model) {
 
-        resourcesService.deleteResources(Long.valueOf(id));
+        resourcesService.deleteResource(Long.valueOf(id));
         filterInvocationSecurityMetadataSource.reload();
 
         return "redirect:/admin/resources";

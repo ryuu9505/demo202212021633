@@ -1,11 +1,12 @@
-package com.example.demo5new.common.converters;
+package com.example.demo6new.converter;
 
-import com.example.demo5new.common.enums.OAuth2Config;
-import com.example.demo5new.common.util.OAuth2Utils;
-import com.example.demo5new.domain.users.ProviderUser;
-import com.example.demo5new.domain.users.social.GoogleUser;
+import com.example.demo6new.domain.ProviderUser;
+import com.example.demo6new.domain.form.GoogleUser;
+import com.example.demo6new.utility.OAuth2Config;
+import com.example.demo6new.utility.OAuth2Utils;
 
-public final class OAuth2GoogleProviderUserConverter implements ProviderUserConverter<ProviderUserRequest,ProviderUser> {
+public final class OAuth2GoogleProviderUserConverter implements ProviderUserConverter<ProviderUserRequest, ProviderUser> {
+
     @Override
     public ProviderUser convert(ProviderUserRequest providerUserRequest) {
 
@@ -13,9 +14,10 @@ public final class OAuth2GoogleProviderUserConverter implements ProviderUserConv
             return null;
         }
 
-        return new GoogleUser(OAuth2Utils.getMainAttributes(
+        return new GoogleUser(OAuth2Utils.getFirstLayerAttributes(
                 providerUserRequest.oAuth2User()),
                 providerUserRequest.oAuth2User(),
                 providerUserRequest.clientRegistration());
+
     }
 }

@@ -8,8 +8,9 @@ import java.util.List;
 
 public interface ResourceRepository extends JpaRepository<Resource, Long> {
 
+    boolean existsByNameAndHttpMethod(String name, String httpMethod);
     Resource findByNameAndHttpMethod(String name, String httpMethod);
-    @Query("select r from Resource r join fetch r.roleSet where r.resourceType = 'url' order by r.orderNum desc")
+    @Query("select r from Resource r join fetch r.roles where r.type = 'url' order by r.orderNum desc")
     List<Resource> findAllResource();
 
 }

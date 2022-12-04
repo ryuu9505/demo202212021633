@@ -1,9 +1,10 @@
-package com.example.demo6new.service;
+package com.example.demo6new.service.user;
 
 import com.example.demo6new.converter.ProviderUserConverter;
 import com.example.demo6new.converter.ProviderUserRequest;
 import com.example.demo6new.domain.ProviderUser;
 import com.example.demo6new.repository.AccountRepository;
+import com.example.demo6new.service.AccountService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

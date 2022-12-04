@@ -1,37 +1,68 @@
 package com.example.demo6new.domain.form;
 
+import com.example.demo6new.domain.ProviderUser;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
-public class ClientUser {
+@Builder
+public class ClientUser implements ProviderUser {
 
-    private String username;
-    private String password;
     private String email;
+    private String password;
+    private String provider;
+    private List<? extends GrantedAuthority> authorities;
+    private String username;
+    private String nickname;
     private String picture;
 
-    private List<? extends GrantedAuthority> authorities;
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
+    @Override
     public String getEmail() {
         return email;
     }
 
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getProvider() {
+        return provider;
+    }
+
+    @Override
+    public List<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public String getNickname() {
+        return nickname;
+    }
+
+    @Override
     public String getPicture() {
         return picture;
     }
 
-    public List<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+    @Override
+    public Map<String, Object> getAttributes() {
+        return null;
+    }
+
+    @Override
+    public OAuth2User getOAuth2User() {
+        return null;
     }
 }

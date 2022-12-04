@@ -45,15 +45,17 @@ public class ResourceService {
     }
 
     public Resource getResource(long id) {
-        return resourceRepository.findById(id).orElse(new Resource());
+        return resourceRepository.findById(id).orElseThrow(); // todo EH
     }
 
-    public List<Resource> getResources() {
+    public List<Resource> getResourceList() {
         return resourceRepository.findAll(Sort.by(Sort.Order.asc("orderNum")));
     }
 
     public void deleteResource(long id) {
         resourceRepository.deleteById(id);
     }
+
+
 
 }

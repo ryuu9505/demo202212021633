@@ -1,5 +1,4 @@
-
-package com.example.demo5new.controller.form;
+package com.example.demo6new.domain.form;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,9 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RoleForm {
 
-    private String id;
-    private String roleName;
-    private String roleDesc;
+    private String name;
 
 }
 

@@ -1,4 +1,4 @@
-package com.example.demo5new.domain;
+package com.example.demo6new.domain;
 
 import lombok.*;
 
@@ -12,14 +12,14 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccessIp implements Serializable {
+public class AccessIp {
 
     @Id
     @GeneratedValue
-    @Column(name = "IP_ID", unique = true, nullable = false)
+    @Column(name = "ip_id", unique = true, nullable = false)
     private Long id;
 
-    @Column(name = "IP_ADDRESS", nullable = false)
-    private String ipAddress;
+    @Column(name = "ip_address", nullable = false)
+    private String address;
 
 }

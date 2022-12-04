@@ -1,4 +1,4 @@
-package com.example.demo5new.domain.users;
+package com.example.demo6new.domain;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -8,14 +8,17 @@ import java.util.Map;
 
 public interface ProviderUser {
 
-    String getId();
-    String getUsername();
-    String getPassword();
+    // common
     String getEmail();
+    String getPassword();
     String getProvider();
+    List<? extends GrantedAuthority> getAuthorities();
+
+    // uncommon
+    String getUsername();
+    String getNickname();
     String getPicture();
 
-    List<? extends GrantedAuthority> getAuthorities();
     Map<String, Object> getAttributes();
     OAuth2User getOAuth2User();
 }

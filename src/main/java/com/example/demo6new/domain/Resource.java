@@ -1,18 +1,27 @@
 package com.example.demo6new.domain;
 
 import javax.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
+import lombok.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Entity
+@Data
+@EqualsAndHashCode(of = "id")
+@ToString(exclude = {"roleSet"})
+@EntityListeners(value = { AuditingEntityListener.class })
 @Getter
 @Setter
-public class Resource {
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Resource implements Serializable {
 
     @Id
     @GeneratedValue
@@ -31,7 +40,10 @@ public class Resource {
     @Column(name = "resource_type")
     private String type;
 
-    @ManyToMany(mappedBy = "resources")
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "role_resource",
+            joinColumns = { @JoinColumn(name = "resource_id") },
+            inverseJoinColumns = { @JoinColumn(name = "role_id") })
     private Set<Role> roles = new HashSet<>();
 
 }

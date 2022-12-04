@@ -1,6 +1,6 @@
-package com.example.demo5new.security.voter;
+package com.example.demo6new.voter;
 
-import com.example.demo5new.security.service.SecurityResourceService;
+import com.example.demo6new.service.SecurityResourceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.AccessDeniedException;

@@ -7,14 +7,15 @@
     <title>Home</title>
 </head>
 <body>
-    <li sec:authorize="isAnonymous()">
-        <a th:href="@{/login}">Login</a>
-    </li>
+    <!--todo for test-->
     <div sec:authorize="isAuthenticated()">
         <img th:src="'static/images/' + ${provider}+ '.png'">
-        <h2>Hello <span th:text="${user}"/></h2>
-
-        <h1>Authenticated</h1>
+        <h2>Hello <span th:text="${username}"/></h2>
+    </div>
+    <div sec:authorize="isAnonymous()">
+        <a th:href="@{/login}">Login</a>
+    </div>
+    <div sec:authorize="isAuthenticated()">
         <form th:action="@{/logout}" method="post">
             <button type="submit">Logout</button>
         </form>

@@ -1,12 +1,12 @@
 package com.example.demo6new.converter;
 
-import com.example.demo5new.common.enums.OAuth2Config;
-import com.example.demo5new.common.util.OAuth2Utils;
-import com.example.demo5new.domain.users.ProviderUser;
-import com.example.demo5new.domain.users.social.KakaoOidcUser;
+import com.example.demo6new.domain.ProviderUser;
+import com.example.demo6new.domain.form.KakaoUser;
+import com.example.demo6new.utility.OAuth2Config;
+import com.example.demo6new.utility.OAuth2Utils;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
-public final class OAuth2KakaoOidcProviderUserConverter implements ProviderUserConverter<ProviderUserRequest,ProviderUser> {
+public final class OAuth2KakaoProviderUserConverter implements ProviderUserConverter<ProviderUserRequest,ProviderUser> {
 
     @Override
     public ProviderUser convert(ProviderUserRequest providerUserRequest) {
@@ -19,7 +19,7 @@ public final class OAuth2KakaoOidcProviderUserConverter implements ProviderUserC
             return null;
         }
 
-        return new KakaoOidcUser(OAuth2Utils.getMainAttributes(
+        return new KakaoUser(OAuth2Utils.getFirstLayerAttributes(
                 providerUserRequest.oAuth2User()),
                 providerUserRequest.oAuth2User(),
                 providerUserRequest.clientRegistration());

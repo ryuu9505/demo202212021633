@@ -1,9 +1,8 @@
-package com.example.demo5new.repository;
+package com.example.demo6new.repository;
 
-import com.example.demo5new.domain.AccessIp;
+import com.example.demo6new.domain.AccessIp;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AccessIpRepository extends JpaRepository<AccessIp, Long> {
-
-    boolean existsByIpAddress(String IpAddress);
+    boolean existsByAddress(String address);
 }

@@ -1,9 +1,8 @@
-package com.example.demo5new.security.service;
+package com.example.demo6new.service;
 
-import com.example.demo5new.domain.Resources;
-import com.example.demo5new.repository.AccessIpRepository;
-import com.example.demo5new.repository.ResourcesRepository;
-import com.example.demo5new.service.RoleHierarchyService;
+import com.example.demo6new.domain.Resource;
+import com.example.demo6new.repository.AccessIpRepository;
+import com.example.demo6new.repository.ResourceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
@@ -11,6 +10,7 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -21,19 +21,19 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SecurityResourceService {
 
-    private final ResourcesRepository resourcesRepository;
+    private final ResourceRepository resourceRepository;
     private final AccessIpRepository accessIpRepository;
     private final RoleHierarchyImpl roleHierarchy;
     private final RoleHierarchyService roleHierarchyService;
 
-    public LinkedHashMap<RequestMatcher, List<ConfigAttribute>> getResourceList() {
+    public LinkedHashMap<RequestMatcher, List<ConfigAttribute>> getResources() {
         LinkedHashMap<RequestMatcher, List<ConfigAttribute>> result = new LinkedHashMap<>();
-        List<Resources> resourcesList = resourcesRepository.findAllResources();
-        resourcesList.forEach(resource -> {
+        List<Resource> ResourceList = resourceRepository.findAllResource();
+        ResourceList.forEach(resource -> {
             List<ConfigAttribute> configAttributeList = new ArrayList<>();
-            resource.getRoleSet().forEach(role -> {
-                configAttributeList.add(new SecurityConfig(role.getRoleName()));
-                result.put(new AntPathRequestMatcher(resource.getResourceName()), configAttributeList);
+            resource.getRoles().forEach(role -> {
+                configAttributeList.add(new SecurityConfig(role.getName()));
+                result.put(new AntPathRequestMatcher(resource.getName()), configAttributeList);
             });
         });
         return result;
@@ -45,7 +45,7 @@ public class SecurityResourceService {
     }
 
     public List<String> getAccessIpList() {
-        return accessIpRepository.findAll().stream().map(accessIp -> accessIp.getIpAddress()).collect(Collectors.toList());
+        return accessIpRepository.findAll().stream().map(accessIp -> accessIp.getAddress()).collect(Collectors.toList());
     }
 
 }

@@ -1,16 +1,21 @@
 package com.example.demo6new.domain;
 
 import javax.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import lombok.*;
+
+import java.io.Serializable;
+import java.util.*;
 
 @Entity
 @Getter
 @Setter
-public class Role {
+@Builder
+@ToString(exclude = {"accounts", "resourcesSet"})
+@EqualsAndHashCode(of = "id")
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Role implements Serializable {
 
     @Id
     @GeneratedValue
@@ -20,11 +25,12 @@ public class Role {
     @Column(name = "role_name", unique = true)
     private String name;
 
-    @ManyToMany(mappedBy = "roles")
-    private List<Account> accounts = new ArrayList<>();
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+    private Set<Account> accounts = new HashSet<>();
 
-    @ManyToMany(mappedBy = "roles")
-    private List<Resource> resources = new ArrayList<>();
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+    @OrderBy("ordernum desc")
+    private Set<Resource> resources = new LinkedHashSet<>();
 
 }
 

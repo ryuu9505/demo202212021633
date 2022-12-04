@@ -1,35 +1,35 @@
-package com.example.demo5new.common.util;
+package com.example.demo6new.utility;
 
-import com.example.demo5new.domain.Attributes;
+import com.example.demo6new.domain.Attributes;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Map;
 
 public class OAuth2Utils {
 
-    public static Attributes getMainAttributes(OAuth2User oAuth2User) {
+    public static Attributes getFirstLayerAttributes(OAuth2User oAuth2User) {
 
         return Attributes.builder()
-                .mainAttributes(oAuth2User.getAttributes())
+                .firstLayerAttributes(oAuth2User.getAttributes())
                 .build();
     }
 
-    public static Attributes getSubAttributes(OAuth2User oAuth2User, String subAttributesKey) {
+    public static Attributes getSecondLayerAttributes(OAuth2User oAuth2User, String subAttributesKey) {
 
-        Map<String, Object> subAttributes = (Map<String, Object>) oAuth2User.getAttributes().get(subAttributesKey);
+        Map<String, Object> secondLayerAttributes = (Map<String, Object>) oAuth2User.getAttributes().get(subAttributesKey);
         return Attributes.builder()
-                .subAttributes(subAttributes)
+                .secondLayerAttributes(secondLayerAttributes)
                 .build();
     }
 
-    public static Attributes getOtherAttributes(OAuth2User oAuth2User, String subAttributesKey, String otherAttributesKey) {
+    public static Attributes getThirdLayerAttributes(OAuth2User oAuth2User, String secondLayerAttributesKey, String thirdLayerAttributesKey) {
 
-        Map<String, Object> subAttributes = (Map<String, Object>) oAuth2User.getAttributes().get(subAttributesKey);
-        Map<String, Object> otherAttributes = (Map<String, Object>) subAttributes.get(otherAttributesKey);
+        Map<String, Object> secondLayerAttributes = (Map<String, Object>) oAuth2User.getAttributes().get(secondLayerAttributesKey);
+        Map<String, Object> thirdLayerAttributes = (Map<String, Object>) secondLayerAttributes.get(thirdLayerAttributesKey);
 
         return Attributes.builder()
-                .subAttributes(subAttributes)
-                .otherAttributes(otherAttributes)
+                .secondLayerAttributes(secondLayerAttributes)
+                .thirdLayerAttributes(thirdLayerAttributes)
                 .build();
     }
 }

@@ -125,6 +125,7 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
+                .mvcMatchers("/node_modules/**", "/assets/**", "/css/**")
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 

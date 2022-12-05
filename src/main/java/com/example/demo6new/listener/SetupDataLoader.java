@@ -44,17 +44,17 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         // for admin
         Set<Role> rolesAdmin = createRoleIfNotFound("ROLE_ADMIN");
         createResourceIfNotFound("/admin/**", "", rolesAdmin, "url");
-        createUserIfNotFound("admin", "pass", "admin@email.com", rolesAdmin);
+        createUserIfNotFound("admin", "12345678", "admin@email.com", rolesAdmin);
 
         // for manager
         Set<Role> rolesManager = createRoleIfNotFound("ROLE_MANAGER");
         createResourceIfNotFound("/manager/**", "", rolesManager, "url");
-        createUserIfNotFound("manager", "pass", "manager@email.com", rolesManager);
+        createUserIfNotFound("manager", "12345678", "manager@email.com", rolesManager);
 
         // for user
         Set<Role> rolesUser = createRoleIfNotFound("ROLE_USER");
         createResourceIfNotFound("/user/**", "", rolesUser, "url");
-        createUserIfNotFound("user", "pass", "user@email.com", rolesUser);
+        createUserIfNotFound("user", "12345678", "user@email.com", rolesUser);
 
         // role hierarchy
         createRoleHierarchyIfNotFound("ROLE_MANAGER", "ROLE_ADMIN");

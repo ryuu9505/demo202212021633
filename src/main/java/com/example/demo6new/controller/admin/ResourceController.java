@@ -4,6 +4,7 @@ import com.example.demo6new.domain.Resource;
 import com.example.demo6new.domain.Role;
 import com.example.demo6new.domain.form.ResourceCreateForm;
 import com.example.demo6new.domain.form.ResourceForm;
+import com.example.demo6new.domain.form.ResourceModifyForm;
 import com.example.demo6new.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import com.example.demo6new.repository.RoleRepository;
 import com.example.demo6new.service.ResourceService;
@@ -22,7 +23,7 @@ import java.util.Set;
 
 @Controller
 @RequiredArgsConstructor
-public class ResourceController { // todo refactor: 'resources' on urls to 'resource'
+public class ResourceController {
 
     private final ModelMapper modelMapper;
     private final UrlFilterInvocationSecurityMetadataSource filterInvocationSecurityMetadataSource;
@@ -38,7 +39,7 @@ public class ResourceController { // todo refactor: 'resources' on urls to 'reso
         return "admin/resource/list";
     }
 
-    @GetMapping("/admin/resources/{id}")
+    @GetMapping("/admin/resource/{id}")
     public String getResource(@PathVariable Long id, Model model) {
 
         /* todo modify with html file (move logics to service: getResourceForm())*/
@@ -46,11 +47,18 @@ public class ResourceController { // todo refactor: 'resources' on urls to 'reso
         model.addAttribute("roleList", roleList);
 
         Resource resource = resourcesService.getResource(id);
-        ResourceForm resourcesForm = modelMapper.map(resource, ResourceForm.class);
-        model.addAttribute("resources", resourcesForm);
+        ResourceForm resourceForm = modelMapper.map(resource, ResourceForm.class);
+        model.addAttribute("resource", resourceForm);
 
         return "admin/resource/detail";
     }
+
+    @PostMapping("/admin/resource/{id}")
+    public String modifyResource(@PathVariable Long id, ResourceModifyForm form, Model model) {
+        resourcesService.modifyResource(id, form);
+        return "admin/resource/detail";
+    }
+
 
     @GetMapping("/admin/resources/register")
     public String viewRoles(Model model) {

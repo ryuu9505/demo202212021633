@@ -1,29 +1,39 @@
-<html  xmlns:th="http://www.thymeleaf.org">
-<head th:replace="admin/common/head :: adminHead"></head>
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/head.html :: head-title-links(~{::title}, ~{::link})}">
+  <title th:text="#{admin}"></title>
+  <link rel="stylesheet" th:href="@{/css/admin.css}" />
+</head>
+
 <body>
-<script type="text/javascript">
-  $(document).ready(function(){
-  });
-</script>
-<div th:replace="admin/common/top::header"></div>
-<div id="maininner"><!-- maininner (s)-->
-  <div class="cc-tab-con">
-    <a href="javascript:tabChange('1');" class="cc-tab-item">사용자관리</a>		<!--// on : 현재 위치 //-->
-    <a href="javascript:tabChange('2');" class="cc-tab-item">권한관리</a>
-    <a href="javascript:void(0);" class="cc-tab-item on">리소스관리</a>
-  </div>
-  <div class="tbl_wrp">
-    <form class="form-horizontal" th:action="@{/admin/resources}" method="post" th:object="${resources}">
-      <input th:type="hidden" name="id" th:value="*{id}" />
+<header th:replace="~{fragments/header.html :: header-common}"></header>
+<div class="nav-scroller bg-body shadow-sm">
+  <nav class="nav" aria-label="Secondary navigation">
+    <a class="nav-link active" aria-current="page" href="#">Dashboard</a>
+    <a class="nav-link" href="#">
+      Managers
+      <span class="badge text-bg-light rounded-pill align-text-bottom">27</span>
+    </a>
+    <a class="nav-link" href="/admin/accounts">Account</a>
+    <a class="nav-link" href="/admin/roles">Role</a>
+    <a class="nav-link" href="/admin/resources">Resource</a>
+  </nav>
+</div>
+<main class="container">
+
+    <form class="form-horizontal" th:action="@{/admin/resources}" method="post" th:object="${resource}">
       <div class="form-group">
-        <label for="resourceName" class="col-sm-2 control-label">리소스명</label>
+        <label for="resourceName" class="col-sm-2 control-label">Name</label>
         <div class="col-sm-10">
           <input type="text" class="form-control input-large" name="resourceName" id="resourceName" placeholder="리소스명" th:value="*{resourceName}">
         </div>
       </div>
 
       <div class="form-group">
-        <label for="resourceType" class="col-sm-2 control-label">리소스타입</label>
+        <label for="resourceType" class="col-sm-2 control-label">Type</label>
         <div class="col-sm-10">
           <input type="text" class="form-control input-large" name="resourceType" id="resourceType" placeholder="리소스타입" th:value="*{resourceType}">
         </div>
@@ -35,32 +45,32 @@
         </div>
       </div>
       <div class="form-group">
-        <label for="orderNum" class="col-sm-2 control-label">순서</label>
+        <label for="orderNum" class="col-sm-2 control-label">Order</label>
         <div class="col-sm-10">
           <input type="text" class="form-control input-large" name="orderNum" id="orderNum" placeholder="순서" th:value="*{orderNum}">
         </div>
       </div>
       <div class="form-group">
-        <label for="roleName" class="col-sm-2 control-label">권한</label>
+        <label for="roleName" class="col-sm-2 control-label">Role</label>
         <div class="col-sm-10">
           <select class="custom-select" name="roleName" id="roleName">
             <option th:each="role: ${roleList}"
-                    th:value="${role.roleName}"
-                    th:text="${role.roleName}"
-                    th:selected="${resources.roleSet.contains(role)} ? 'true' : 'false'" />
+                    th:value="${role.name}"
+                    th:text="${role.name}"
+                    th:selected="${resource.roles.contains(role)} ? 'true' : 'false'" />
           </select>
         </div>
       </div>
       <div class="form-group">
         <div class="col-sm-offset-1 col-sm-10">
-          <button type="Submit" class="btn btn-dark btn-lg">등록</button>
-          <a th:href="@{/logout}">
-            <a class="btn btn-dark btn-lg" style="margin:10;" th:href="@{/admin/resources}">목록 </a>
-            <a class="btn btn-dark btn-lg" style="margin:10;" th:href="@{'/admin/resources/delete/' + *{id}}">삭제</a>
+          <button type="submit" class="btn btn-dark btn-lg">Submit</button>
+          <button type="button" class="btn btn-dark btn-lg" th:href="@{/admin/resources}">List</button>
+          <button type="button" class="btn btn-dark btn-lg" th:href="@{'/admin/resources/delete/' + *{id}}">Delete</button>
         </div>
       </div>
     </form>
-  </div>
-</div>
+
+</main>
+<footer th:replace="~{fragments/footer.html :: footer-common}"></footer>
 </body>
 </html>

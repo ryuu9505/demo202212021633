@@ -10,18 +10,7 @@
 
 <body>
 <header th:replace="~{fragments/header.html :: header-common}"></header>
-<div class="nav-scroller bg-body shadow-sm">
-  <nav class="nav" aria-label="Secondary navigation">
-    <a class="nav-link active" aria-current="page" href="#">Dashboard</a>
-    <a class="nav-link" href="#">
-      Managers
-      <span class="badge text-bg-light rounded-pill align-text-bottom">27</span>
-    </a>
-    <a class="nav-link" href="/admin/accounts">Account</a>
-    <a class="nav-link" href="/admin/roles">Role</a>
-    <a class="nav-link" href="/admin/resources">Resource</a>
-  </nav>
-</div>
+<div th:replace="~{fragments/nav.html :: nav-admin}"></div>
 <main class="container">
 </main>
 

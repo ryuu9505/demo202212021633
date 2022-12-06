@@ -11,7 +11,7 @@ import java.util.*;
 @Getter
 @Setter
 @Builder
-@ToString(exclude = {"accounts", "resourcesSet"})
+@ToString(exclude = {"accounts", "resources"})
 @EqualsAndHashCode(of = "id")
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

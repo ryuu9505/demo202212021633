@@ -1,44 +1,49 @@
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="admin/common/head :: adminHead"></head>
-<body>
-	<script type="text/javascript">
-	$(document).ready(function(){
-	});
-	
-	</script>
-	<div th:replace="admin/common/top::header"></div>
-	<div id="maininner"><!-- maininner (s)-->
-		<div class="cc-tab-con">
-			<a href="javascript:void(0);" class="cc-tab-item on">사용자관리</a>		<!--// on : 현재 위치 //-->
-			<a href="javascript:tabChange('2');" class="cc-tab-item">권한관리</a>
-			<a href="javascript:tabChange('3');" class="cc-tab-item">리소스관리</a>
-		</div>
-			<div class="tbl_wrp">
-				<table class="table">
-					<thead>
-					<tr class="table-info">
-						<th scope="col">이름</th>
-						<th scope="col">이메일</th>
-						<th scope="col">권한</th>
-					</tr>
-					</thead>
-					<tbody>
-					<tr class="link_btn hover" th:each="account : ${accounts}">
 
-						<td style="text-align: left;">
-							<a th:href="@{'/admin/accounts/' + ${account.getAccountId}}"><span th:text="${account.username}">회원</span></a>
-						</td>
-						<td style="text-align: left;" th:text="${account.email}"></td>
-						<td style="text-align: left;">
-							<span th:each="role,iter : ${account.userRoles}">
-								<h6 th:text="${role.roleName}"></h6>
-							</span>
-						</td>
-					</tr>
-					</tbody>
-				</table>
+			<div class="tbl_wrp">
+
 			</div>
+
+
+<!DOCTYPE html>
+<html lang="en"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/head.html :: head-title-links(~{::title}, ~{::link})}">
+	<title th:text="#{admin}"></title>
+	<link rel="stylesheet" th:href="@{/css/admin.css}" />
+</head>
+
+<body>
+<header th:replace="~{fragments/header.html :: header-common}"></header>
+<div th:replace="~{fragments/nav.html :: nav-admin}"></div>
+<main>
+	<table class="table">
+		<thead>
+		<tr class="table-info">
+			<th scope="col">Username</th>
+			<th scope="col">Email</th>
+			<th scope="col">Role</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr class="link_btn hover" th:each="account : ${accounts}">
+			<td style="text-align: left;">
+				<a th:href="@{'/admin/accounts/' + ${account.id}}"><span th:text="${account.username}">Account</span></a>
+			</td>
+			<td style="text-align: left;" th:text="${account.email}"></td>
+			<td style="text-align: left;">
+				<span th:each="role,iter : ${account.roles}">
+					<h6 th:text="${role.name}"></h6>
+				</span>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+	<div>
+		<button type="button" class="btn btn-secondary" th:href="@{/admin/accounts/register}">Create Account</button>
 	</div>
-		
+</main>
+<footer th:replace="~{fragments/footer.html :: footer-common}"></footer>
 </body>
 </html>

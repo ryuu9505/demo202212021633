@@ -1,56 +1,53 @@
-<html  xmlns:th="http://www.thymeleaf.org">
-<head th:replace="admin/common/head :: adminHead"></head>
-<body>
-<script type="text/javascript">
-  $(document).ready(function(){
-  });
-</script>
-<div th:replace="admin/common/top::header"></div>
-<div id="maininner"><!-- maininner (s)-->
-<div class="cc-tab-con">
-  <a href="javascript:void(0);" class="cc-tab-item on">사용자관리</a>		<!--// on : 현재 위치 //-->
-  <a href="javascript:tabChange('2');" class="cc-tab-item">권한관리</a>
-  <a href="javascript:tabChange('3');" class="cc-tab-item">리소스관리</a>
-</div>
-<div class="tbl_wrp">
-    <form class="form-horizontal" th:action="@{/admin/accounts}" method="post" th:object="${account}">
-      <input th:type="hidden" name="id" th:value="*{id}" />
-      <div class="form-group">
-        <label for="username" class="col-sm-2 control-label">아이디</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control input-large" name="username" id="username" placeholder="username" th:value="*{username}" required>
-        </div>
-      </div>
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-      <div class="form-group">
-        <label for="password" class="col-sm-2 control-label">비밀번호</label>
-        <div class="col-sm-10">
-          <input type="password" class="form-control input-large" name="password" id="password" placeholder="Password" data-minlength="6" required>
-        </div>
+<head th:replace="~{fragments/head.html :: head-title-links(~{::title}, ~{::link})}">
+  <title th:text="#{admin}"></title>
+  <link rel="stylesheet" th:href="@{/css/admin.css}" />
+</head>
+
+<body>
+<header th:replace="~{fragments/header.html :: header-common}"></header>
+<div th:replace="~{fragments/nav.html :: nav-admin}"></div>
+<main class="container">
+  <form class="form-horizontal" th:action="@{/admin/accounts}" method="post" th:object="${form}">
+    <div class="form-group">
+      <label for="username" class="col-sm-2 control-label">Username</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control input-large" name="username" id="username" placeholder="username" th:value="*{username}" required>
       </div>
-      <div class="form-group">
-        <label for="email" class="col-sm-2 control-label">이메일</label>
-        <div class="col-sm-10">
-          <input type="email" class="form-control input-large" name="email" id="email" placeholder="이메일" th:value="*{email}" required>
-        </div>
+    </div>
+    <div class="form-group">
+      <label for="password" class="col-sm-2 control-label">Password</label>
+      <div class="col-sm-10">
+        <input type="password" class="form-control input-large" name="password" id="password" placeholder="Password" data-minlength="8" required>
       </div>
-      <div class="form-group">
-        <label for="roles" class="col-sm-2 control-label">권한</label>
-        <div class="col-sm-10" th:each="role: ${roleList}">
-          <input th:type="checkbox" name="roles" id="roles"
-                 th:text="${role.roleName}"
-                 th:value="${role.roleName}"
-                 th:checked="${account.roles.contains(role.roleName)} ? 'true' : 'false'" />
-        </div>
+    </div>
+    <div class="form-group">
+      <label for="email" class="col-sm-2 control-label">Email</label>
+      <div class="col-sm-10">
+        <input type="email" class="form-control input-large" name="email" id="email" placeholder="Email" th:value="*{email}" required>
       </div>
-      <div class="form-group">
-        <div class="col-sm-offset-1 col-sm-10">
-          <button type="Submit" class="btn btn-dark btn-lg">등록</button>
-          <a class="btn btn-dark btn-lg" style="margin:10;" th:href="@{/admin/accounts}">목록 </a>
-        </div>
+    </div>
+    <div class="form-group">
+      <label for="roles" class="col-sm-2 control-label">Role</label>
+      <div class="col-sm-10" th:each="role: ${roles}">
+        <input th:type="checkbox" name="roles" id="roles"
+               th:text="${role.name}"
+               th:value="${role.name}"
+               th:checked="${form.roles.contains(role)} ? 'true' : 'false'" />
       </div>
-    </form>
-  </div>
-</div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-1 col-sm-10">
+        <button type="submit" class="btn btn-secondary">Register</button>
+        <a class="btn btn-secondary" th:href="@{/admin/accounts}">List</a>
+      </div>
+    </div>
+  </form>
+</main>
+<footer th:replace="~{fragments/footer.html :: footer-common}"></footer>
 </body>
 </html>

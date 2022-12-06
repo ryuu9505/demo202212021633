@@ -2,11 +2,11 @@ package com.example.demo6new.service;
 
 import com.example.demo6new.domain.Role;
 import com.example.demo6new.domain.form.RoleCreateForm;
-import com.example.demo6new.domain.form.RoleForm;
 import com.example.demo6new.domain.form.RoleModifyForm;
 import com.example.demo6new.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,15 +41,23 @@ public class RoleService {
     }
 
     public Role getRole(long id) {
-        return roleRepository.findById(id).orElseThrow();
+        return roleRepository.findById(id).get();
     } // todo EH
 
-    public RoleForm getRoleForm(long id) {
-        return modelMapper.map(roleRepository.findById(id), RoleForm.class);
+    public RoleModifyForm getRoleForm(long id) {
+        return modelMapper.map(roleRepository.findById(id).get(), RoleModifyForm.class);
     }
 
     public List<Role> getRoleList() {
-        return roleRepository.findAll();
+        return roleRepository.findAll(Sort.by(Sort.Order.asc("id")));
+    }
+
+    public Set<Role> getRolesByName(List<String> nameList) { // todo EH
+        Set<Role> roles = new HashSet<>();
+        for(String name : nameList) {
+            roles.add(roleRepository.findByName(name));
+        }
+        return roles;
     }
 
     public Set<Role> getDefaultRoles() {

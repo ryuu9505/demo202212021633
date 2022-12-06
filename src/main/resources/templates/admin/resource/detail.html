@@ -12,53 +12,49 @@
 <header th:replace="~{fragments/header.html :: header-common}"></header>
 <div th:replace="~{fragments/nav.html :: nav-admin}"></div>
 <main class="container">
-
-    <form class="form-horizontal" th:action="@{/admin/resources}" method="post" th:object="${resource}">
-      <div class="form-group">
-        <label for="resourceName" class="col-sm-2 control-label">Name</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control input-large" name="resourceName" id="resourceName" th:value="*{name}">
+    <form class="mt-5" th:action="@{/admin/resources}" method="post" th:object="${resourceForm}">
+      <input th:type="hidden" name="id" th:value="*{id}" />
+      <div class="row">
+        <div class="col-12 mb-2">
+          <label for="name" class="form-label">Name</label>
+          <input type="text" class="form-control" name="name" id="name" th:value="*{name}">
         </div>
       </div>
-
-      <div class="form-group">
-        <label for="resourceType" class="col-sm-2 control-label">Type</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control input-large" name="resourceType" id="resourceType" th:value="*{type}">
+      <div class="row">
+        <div class="col-12 mb-2">
+          <label for="type" class="form-label">Type</label>
+          <input type="text" class="form-control" name="type" id="type" th:value="*{type}">
         </div>
       </div>
-      <div class="form-group">
-        <label for="httpMethod" class="col-sm-2 control-label">HttpMethod</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control input-large" name="httpMethod" id="httpMethod" placeholder="HttpMethod" th:value="*{httpMethod}">
+      <div class="row">
+        <div class="col-12 mb-2">
+          <label for="httpMethod" class="form-label">HttpMethod</label>
+          <input type="text" class="form-control" name="httpMethod" id="httpMethod" th:value="*{httpMethod}">
         </div>
       </div>
-      <div class="form-group">
-        <label for="orderNum" class="col-sm-2 control-label">Order</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control input-large" name="orderNum" id="orderNum" placeholder="순서" th:value="*{orderNum}">
+      <div class="row">
+        <div class="col-12 mb-2">
+          <label for="orderNum" class="form-label">Order</label>
+          <input type="text" class="form-control" name="orderNum" id="orderNum" th:value="*{orderNum}">
         </div>
       </div>
-      <div class="form-group">
-        <label for="roleName" class="col-sm-2 control-label">Role</label>
-        <div class="col-sm-10">
-          <select class="custom-select" name="roleName" id="roleName">
+      <div class="row">
+        <div class="col-12 mb-2">
+          <label for="roleNameList" class="form-label">Role</label>
+          <select class="custom-select" name="roleNameList" id="roleNameList">
             <option th:each="role: ${roles}"
                     th:value="${role.name}"
                     th:text="${role.name}"
-                    th:selected="${resource.roles.contains(role)} ? 'true' : 'false'" />
+                    th:selected="${resourceForm.roleNameList.contains(role.name)} ? 'true' : 'false'" />
           </select>
         </div>
       </div>
-      <div class="form-group">
-        <div class="col-sm-offset-1 col-sm-10">
-          <button type="submit" class="btn btn-dark">Submit</button>
+      <div class="d-flex justify-content-center gap-2 mt-1">
+          <button type="submit" class="btn btn-dark">Save</button>
           <a class="btn btn-dark" th:href="@{/admin/resources}">List</a>
           <a class="btn btn-dark" th:href="@{'/admin/resources/delete/' + *{id}}">Delete</a>
-        </div>
       </div>
     </form>
-
 </main>
 <footer th:replace="~{fragments/footer.html :: footer-common}"></footer>
 </body>

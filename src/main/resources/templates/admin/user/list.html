@@ -1,9 +1,3 @@
-
-			<div class="tbl_wrp">
-
-			</div>
-
-
 <!DOCTYPE html>
 <html lang="en"
 	  xmlns:th="http://www.thymeleaf.org"
@@ -18,30 +12,34 @@
 <header th:replace="~{fragments/header.html :: header-common}"></header>
 <div th:replace="~{fragments/nav.html :: nav-admin}"></div>
 <main>
-	<table class="table">
-		<thead>
-		<tr class="table-info">
-			<th scope="col">Username</th>
-			<th scope="col">Email</th>
-			<th scope="col">Role</th>
-		</tr>
+	<table class="table table-hover">
+		<thead class="table-dark">
+			<tr>
+				<th scope="col">#</th>
+				<th scope="col" th:text="#{username}">Username</th>
+				<th scope="col" th:text="#{email}">Email</th>
+				<th scope="col" th:text="#{role}">Role</th>
+			</tr>
 		</thead>
 		<tbody>
-		<tr class="link_btn hover" th:each="account : ${accounts}">
-			<td style="text-align: left;">
-				<a th:href="@{'/admin/accounts/' + ${account.id}}"><span th:text="${account.username}">Account</span></a>
-			</td>
-			<td style="text-align: left;" th:text="${account.email}"></td>
-			<td style="text-align: left;">
-				<span th:each="role,iter : ${account.roles}">
-					<h6 th:text="${role.name}"></h6>
-				</span>
-			</td>
-		</tr>
+			<tr th:each="account : ${accounts}">
+				<td th:text="${account.id}"></td>
+				<td>
+					<a th:href="@{'/admin/accounts/' + ${account.id}}">
+						<span th:text="${account.username}"></span>
+					</a>
+				</td>
+				<td th:text="${account.email}"></td>
+				<td>
+					<div th:each="role,iter : ${account.roles}">
+						<span th:text="${role.name}"></span>
+					</div>
+				</td>
+			</tr>
 		</tbody>
 	</table>
-	<div>
-		<button type="button" class="btn btn-secondary" th:href="@{/admin/accounts/register}">Create Account</button>
+	<div class="mx-2">
+		<!-- todo <a class="btn btn-dark" th:href="@{/admin/accounts/create}">Create Account</a>-->
 	</div>
 </main>
 <footer th:replace="~{fragments/footer.html :: footer-common}"></footer>

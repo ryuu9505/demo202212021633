@@ -2,23 +2,19 @@ package com.example.demo6new.service;
 
 import com.example.demo6new.domain.Account;
 import com.example.demo6new.domain.ProviderUser;
-import com.example.demo6new.domain.Role;
 import com.example.demo6new.domain.form.AccountCreateForm;
-import com.example.demo6new.domain.form.AccountForm;
 import com.example.demo6new.domain.form.AccountModifyForm;
 import com.example.demo6new.repository.AccountRepository;
-import com.example.demo6new.repository.RoleRepository;
 import com.example.demo6new.utility.AuthorityMapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -55,10 +51,11 @@ public class AccountService {
         accountRepository.save(account);
     }
 
-    public void modifyAccount(Long id, AccountModifyForm form) {
-        form.setPassword(passwordEncoder.encode(form.getPassword()));
-        Account account = accountRepository.findById(id).orElseThrow();
-        modelMapper.map(form, account);
+    public void modifyAccount(Long id, AccountModifyForm accountForm) { // todo EH
+        // todo move to modifyAccountPassword() accountForm.setPassword(passwordEncoder.encode(accountForm.getPassword()));
+        Account account = accountRepository.findById(id).get();
+        modelMapper.map(accountForm, account);
+        account.setRoles(roleService.getRolesByName(accountForm.getRoleNameList()));
         if (account.getRoles() == null) {
             account.setRoles(roleService.getDefaultRoles());
         }
@@ -66,15 +63,20 @@ public class AccountService {
     }
 
     public List<Account> getAccounts() {
-        return accountRepository.findAll();
+        return accountRepository.findAll(Sort.by(Sort.Order.desc("id")));
     }
 
     public Account getAccount(Long id) {
-        return accountRepository.findById(id).orElseThrow();
+        return accountRepository.findById(id).get();
     } // todo EH
 
-    public AccountForm getAccountForm(Long id) {
-        return modelMapper.map(accountRepository.findById(id), AccountForm.class);
+    public AccountModifyForm getAccountForm(Long id) {
+        Account account = accountRepository.findById(id).get();
+        AccountModifyForm accountModifyForm = modelMapper.map(account, AccountModifyForm.class);
+        accountModifyForm.setRoleNameList(
+                account.getRoles().stream().map(role ->
+                        role.getName()).collect(Collectors.toList()));
+        return accountModifyForm;
     }
 
     public void deleteAccount(Long id) {

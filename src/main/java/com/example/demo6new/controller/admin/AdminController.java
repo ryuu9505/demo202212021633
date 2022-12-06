@@ -9,6 +9,7 @@ import com.example.demo6new.service.AccountService;
 import com.example.demo6new.service.ResourceService;
 import com.example.demo6new.service.RoleService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,18 +18,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
-import java.util.Set;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class AdminController { // todo refactor: 'resources' on urls to 'resource'
 
     private final ModelMapper modelMapper;
     private final UrlFilterInvocationSecurityMetadataSource filterInvocationSecurityMetadataSource;
-    private final ResourceService resourcesService;
+    private final ResourceService resourceService;
     private final RoleService roleService;
     private final AccountService accountService;
 
+    /**
+     * Account
+     */
     @GetMapping("/admin")
     public String home() {
         return "admin/home";
@@ -36,40 +40,40 @@ public class AdminController { // todo refactor: 'resources' on urls to 'resourc
 
     @GetMapping("/admin/accounts")
     public String getAccounts(Model model) {
-
-        List<Account> accounts = accountService.getAccounts();
-        model.addAttribute("accounts", accounts);
+        List<Account> accountList = accountService.getAccounts();
+        model.addAttribute("accounts", accountList);
 
         return "admin/user/list";
     }
 
-    @PostMapping("/admin/account/{id}")
-    public String modifyAccount(@PathVariable Long id, AccountModifyForm form) {
-        accountService.modifyAccount(id, form);
+    @PostMapping("/admin/accounts")
+    public String modifyAccount(AccountModifyForm accountModifyForm) {
+        Long accountId = accountModifyForm.getId();
+        accountService.modifyAccount(accountId, accountModifyForm);
 
-        return "redirect:/admin/account/" + id;
+        return "redirect:/admin/accounts";
     }
 
     @GetMapping("/admin/accounts/{id}")
     public String getAccount(@PathVariable Long id, Model model) {
-        Account form = accountService.getAccount(id);
+        AccountModifyForm accountModifyForm = accountService.getAccountForm(id);
         List<Role> roleList = roleService.getRoleList();
-        model.addAttribute("form", form);
+        model.addAttribute("accountForm", accountModifyForm);
         model.addAttribute("roles", roleList);
 
         return "admin/user/detail";
     }
 
     @GetMapping("/admin/accounts/delete/{id}") // todo feat: modify to use DELETE method
-    public String deleteAccount(@PathVariable(value = "id") Long id) {
+    public String deleteAccount(@PathVariable Long id) {
         accountService.deleteAccount(id);
 
         return "redirect:/admin/users";
     }
 
-
-
-
+    /**
+     * Role
+     */
 
     @GetMapping("/admin/roles")
     public String getRoles(Model model) {
@@ -78,93 +82,92 @@ public class AdminController { // todo refactor: 'resources' on urls to 'resourc
         return "admin/role/list";
     }
 
-    @GetMapping("/admin/roles/register")
-    public String createRoleForm(Model model) { // todo check
-        RoleForm form = new RoleForm();
-        model.addAttribute("role", form);
-        return "admin/role/detail";
+    @GetMapping("/admin/roles/create")
+    public String createRole(Model model) { // todo check
+        RoleCreateForm roleCreateForm = new RoleCreateForm();
+        model.addAttribute("roleForm", roleCreateForm);
+        return "admin/role/create";
+    }
+
+    @PostMapping("/admin/roles/create")
+    public String createRole(RoleCreateForm roleCreateForm) {
+        roleService.createRole(roleCreateForm);
+        return "redirect:/admin/roles";
     }
 
     @PostMapping("/admin/roles")
-    public String createRole(RoleCreateForm form) {
-        roleService.createRole(form);
+    public String modifyRole(RoleModifyForm roleModifyForm) { // todo check
+        Long roleId = roleModifyForm.getId();
+        roleService.modifyRole(roleId, roleModifyForm);
         return "redirect:/admin/roles";
     }
 
     @GetMapping("/admin/roles/{id}")
     public String getRole(@PathVariable Long id, Model model) {
-        Role role = roleService.getRole(id);
-        model.addAttribute("role", role);
+        RoleModifyForm roleModifyForm = roleService.getRoleForm(id);
+        model.addAttribute("roleForm", roleModifyForm);
 
         return "admin/role/detail";
     }
 
-    @GetMapping("/admin/roles/delete/{id}") // todo refactor: to use DELETE method
-    public String deleteResources(@PathVariable Long id) {
+    @GetMapping("/admin/roles/delete/{id}") // todo refactor: 연관된 계정 defalut (ROLE_USER) 로 변경
+    public String deleteRole(@PathVariable Long id) {
         roleService.deleteRole(id);
-        return "redirect:/admin/resources";
+        return "redirect:/admin/roles";
     }
 
-
+    /**
+     * Resource
+     */
 
     @GetMapping("/admin/resources")
-    public String resourcesList(Model model) {
-
-        List<Resource> resourceList = resourcesService.getResourceList();
+    public String getResourceList(Model model) {
+        List<Resource> resourceList = resourceService.getResourceList();
         model.addAttribute("resources", resourceList);
-
         return "admin/resource/list";
     }
 
     @GetMapping("/admin/resources/{id}")
     public String getResource(@PathVariable Long id, Model model) {
-
-        /* todo modify with html file (move logics to service: getResourceForm())*/
         List<Role> roleList = roleService.getRoleList();
         model.addAttribute("roles", roleList);
 
-        Resource resource = resourcesService.getResource(id);
-        model.addAttribute("resource", resource);
-
-        return "admin/resource/detail";
-    }
-
-    @PostMapping("/admin/resources/{id}")
-    public String modifyResource(@PathVariable Long id, ResourceModifyForm form, Model model) {
-        resourcesService.modifyResource(id, form);
-        return "admin/resource/detail";
-    }
-
-
-    @GetMapping("/admin/resources/register")
-    public String viewRoles(Model model) {
-
-        /* todo modify with html file (move logics to service)*/
-        List<Role> roleList = roleService.getRoleList();
-        model.addAttribute("roleList", roleList);
-
-        ResourceForm resourcesForm = new ResourceForm();
-        /*Set<Role> roleSet = new HashSet<>();
-        roleSet.add(new Role());
-        resourcesForm.setRoleSet(roleSet);*/
-        model.addAttribute("resources", resourcesForm);
+        ResourceModifyForm resourceModifyForm = resourceService.getResourceForm(id);
+        model.addAttribute("resourceForm", resourceModifyForm);
 
         return "admin/resource/detail";
     }
 
     @PostMapping("/admin/resources")
-    public String createResource(ResourceCreateForm resourcesCreateForm) {
+    public String modifyResource(ResourceModifyForm resourceModifyForm) {
+        Long resourceId = resourceModifyForm.getId();
+        resourceService.modifyResource(resourceId, resourceModifyForm);
 
-        resourcesService.createResource(resourcesCreateForm);
+        return "redirect:/admin/resources";
+    }
+
+    @GetMapping("/admin/resources/create")
+    public String createResource(Model model) {
+        List<Role> roleList = roleService.getRoleList();
+        model.addAttribute("roles", roleList);
+
+        ResourceCreateForm resourceCreateForm = new ResourceCreateForm();
+        model.addAttribute("resourceForm", resourceCreateForm);
+
+        return "admin/resource/create";
+    }
+
+    @PostMapping("/admin/resources/create")
+    public String createResource(ResourceCreateForm resourceCreateForm) {
+        resourceService.createResource(resourceCreateForm);
         filterInvocationSecurityMetadataSource.reload();
 
         return "redirect:/admin/resources";
     }
 
     @GetMapping("/admin/resources/delete/{id}") // todo; to use DELETE method
-    public String removeResource(@PathVariable String id, Model model) {
-
-        resourcesService.deleteResource(Long.valueOf(id));
+    public String removeResource(@PathVariable Long id) {
+        resourceService.deleteResource(id);
         filterInvocationSecurityMetadataSource.reload();
 
         return "redirect:/admin/resources";

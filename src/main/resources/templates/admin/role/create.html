@@ -12,24 +12,22 @@
 <header th:replace="~{fragments/header.html :: header-common}"></header>
 <div th:replace="~{fragments/nav.html :: nav-admin}"></div>
 <main class="container">
-  <form class="mt-5" th:action="@{/admin/roles}" method="post" th:object="${roleForm}">
-    <input th:type="hidden" name="id" th:value="*{id}" />
+  <form class="mt-5" th:action="@{/admin/roles/create}" method="post" th:object="${roleForm}">
     <div class="row">
       <div class="col-12 mb-2">
         <label for="name" class="form-label">Name</label>
-        <input type="text" class="form-control" name="name" id="name" th:value="*{name}">
+        <input type="text" class="form-control" name="name" id="name">
       </div>
     </div>
     <div class="row">
       <div class="col-12 mb-2">
-        <label for="description" class="form-label">Description</label>
-        <input type="text" class="form-control" name="description" id="description" th:value="*{description}">
+      <label for="description" class="form-label">Description</label>
+      <input type="text" class="form-control" name="description" id="description">
       </div>
     </div>
     <div class="d-flex justify-content-center gap-2 mt-1">
-      <button type="submit" class="btn btn-secondary">Save</button>
-      <a class="btn btn-secondary" th:href="@{/admin/roles}">List</a>
-      <a class="btn btn-dark" th:href="@{'/admin/roles/delete/' + *{id}}">Delete</a>
+        <button type="submit" class="btn btn-dark">Submit</button>
+        <a class="btn btn-dark" th:href="@{/admin/roles}">Cancel</a>
     </div>
   </form>
 </main>

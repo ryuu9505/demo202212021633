@@ -22,8 +22,11 @@ public class Role implements Serializable {
     @Column(name = "role_id")
     private Long id;
 
-    @Column(name = "role_name", unique = true)
+    @Column(unique = true)
     private String name;
+
+    @Column(unique = true)
+    private String description;
 
     @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
     private Set<Account> accounts = new HashSet<>();

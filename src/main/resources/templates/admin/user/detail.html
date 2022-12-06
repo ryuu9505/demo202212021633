@@ -12,39 +12,41 @@
 <header th:replace="~{fragments/header.html :: header-common}"></header>
 <div th:replace="~{fragments/nav.html :: nav-admin}"></div>
 <main class="container">
-  <form class="form-horizontal" th:action="@{/admin/accounts}" method="post" th:object="${form}">
-    <div class="form-group">
-      <label for="username" class="col-sm-2 control-label">Username</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control input-large" name="username" id="username" placeholder="username" th:value="*{username}" required>
+  <form class="mt-5" th:action="@{/admin/accounts}" method="post" th:object="${accountForm}">
+    <input th:type="hidden" name="id" th:value="*{id}" />
+    <div class="row">
+      <div class="col-12 mb-2">
+      <label for="username" class="form-label" th:text="#{username}">Username</label>
+      <input type="text" class="form-control" name="username" id="username" placeholder="Username" th:value="*{username}" required>
       </div>
     </div>
-    <div class="form-group">
-      <label for="password" class="col-sm-2 control-label">Password</label>
-      <div class="col-sm-10">
-        <input type="password" class="form-control input-large" name="password" id="password" placeholder="Password" data-minlength="8" required>
+    <!--<div class="row">
+      <div class="col-12 mb-2">
+        <label for="password" class="form-label" th:text="#{password}">Password</label>
+        <input type="text" class="form-control" name="password" id="password" placeholder="Password" data-minlength="8" required>
+      </div>
+    </div>-->
+    <div class="row">
+      <div class="col-12 mb-2">
+      <label for="email" class="form-label" th:text="#{email}">Email</label>
+      <input type="email" class="form-control" name="email" id="email" placeholder="Email" th:value="*{email}" required>
       </div>
     </div>
-    <div class="form-group">
-      <label for="email" class="col-sm-2 control-label">Email</label>
-      <div class="col-sm-10">
-        <input type="email" class="form-control input-large" name="email" id="email" placeholder="Email" th:value="*{email}" required>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="roles" class="col-sm-2 control-label">Role</label>
-      <div class="col-sm-10" th:each="role: ${roles}">
-        <input th:type="checkbox" name="roles" id="roles"
+    <div class="row">
+      <div class="col-12 mb-2">
+      <label for="roleNameList" class="form-label">Role</label>
+      <div th:each="role: ${roles}">
+        <input th:type="checkbox" name="roleNameList" id="roleNameList"
                th:text="${role.name}"
                th:value="${role.name}"
-               th:checked="${form.roles.contains(role)} ? 'true' : 'false'" />
+               th:checked="${accountForm.roleNameList.contains(role.name)} ? 'true' : 'false'" />
+      </div>
       </div>
     </div>
-    <div class="form-group">
-      <div class="col-sm-offset-1 col-sm-10">
-        <button type="submit" class="btn btn-secondary">Register</button>
-        <a class="btn btn-secondary" th:href="@{/admin/accounts}">List</a>
-      </div>
+    <div class="d-flex justify-content-center gap-2 mt-1">
+      <button type="submit" class="btn btn-secondary">Save</button>
+      <a class="btn btn-secondary" th:href="@{/admin/accounts}">List</a>
+      <a class="btn btn-dark" th:href="@{'/admin/accounts/delete/' + *{id}}">Delete</a>
     </div>
   </form>
 </main>

@@ -13,4 +13,5 @@ public class RoleCreateForm {
     @NotBlank
     private String name;
 
+    private String description;
 }

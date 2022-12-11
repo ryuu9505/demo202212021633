@@ -24,19 +24,8 @@ public class HomeController {
     public String index(@AuthenticationPrincipal PrincipalUser principalUser, Model model) {
 
         if (principalUser != null) {
-
             ProviderUser providerUser = principalUser.providerUser();
-
-            // todo for test
-            log.info("username={}", providerUser.getUsername());
-            log.info("provider={}", providerUser.getProvider());
-            log.info("email={}", providerUser.getEmail());
-            log.info("picture={}", providerUser.getPicture());
-            log.info("authorities={}", providerUser.getAuthorities().toString());
-            log.info("attributes={}", providerUser.getAttributes());
-
             model.addAttribute("username", providerUser.getUsername());
-            model.addAttribute("provider", providerUser.getProvider());
         }
 
         return "index";
@@ -64,28 +53,8 @@ public class HomeController {
         return ACCESS_DENIED_VIEW_NAME;
     }
 
-    /**
-     * todo delete
-     * TEST methods
-     */
-
-    @GetMapping("/user/test")
-    public String testUser() {
-        return "test/user";
-    }
-
-    @GetMapping("/manager/test")
-    public String testManager() {
-        return "test/manager";
-    }
-
-    @GetMapping("/admin/test")
-    public String testAdmin() {
-        return "test/admin";
-    }
-
     @GetMapping("/test")
     public String test() {
-        return "test/test";
+        return "test";
     }
 }

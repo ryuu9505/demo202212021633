@@ -31,7 +31,7 @@ public class AccountController {
         return "sign-up";
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/sign-up")
     public String signUpSubmit(@Validated AccountCreateForm form, BindingResult bindingResult) {
 
         if(bindingResult.hasErrors()) {
